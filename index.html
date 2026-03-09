@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="四柱推命の命式から、あなたの魂の景色を読み解きます。MODO ROOM — Soul Element Map">
-  <meta property="og:title" content="Soul Element Map — MODO ROOM">
-  <meta property="og:description" content="命が風景になる場所。四柱推命の命式から、あなたの魂の五行を可視化します。">
+  <meta name="description" content="四柱推命の命式から、あなたの魂の景色を読み解きます。MODO ROOM — Soul Element Generator">
+  <meta property="og:title" content="Soul Element Generator — MODO ROOM">
+  <meta property="og:description" content="あなたの命は、ひとつの風景。四柱推命の命式から、あなたの魂の五行を可視化します。">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#0e0c0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>MODO ROOM — Soul Element Map</title>
+<title>MODO ROOM — Soul Element Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
@@ -453,7 +453,56 @@
     letter-spacing: 0.25em;
     color: var(--dawn);
     text-transform: uppercase;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
+  }
+
+  .lang-toggle {
+    display: flex;
+    gap: 8px;
+    margin: 20px 0 8px;
+    justify-content: flex-end;
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(200,170,120,0.3);
+    color: var(--mist);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    transition: all 0.3s;
+  }
+  .lang-btn.active {
+    border-color: var(--dawn);
+    color: var(--dawn);
+  }
+
+  .endroll {
+    margin-top: 48px;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--dawn);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    opacity: 0.6;
+    text-align: center;
+  }
+
+  .landscape-reading {
+    margin-top: 40px;
+    padding-top: 36px;
+    border-top: 1px solid rgba(200,180,150,0.15);
+  }
+
+  .landscape-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--dawn);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    opacity: 0.8;
   }
 
   .reading-text {
@@ -578,8 +627,8 @@
   <!-- Header -->
   <div class="header">
     <div class="logo">Modo Room</div>
-    <h1 class="title">Soul Element Map</h1>
-    <div class="subtitle">命が風景になる場所</div>
+    <h1 class="title">Soul Element Generator</h1>
+    <div class="subtitle">あなたの命は、ひとつの風景</div>
     <div class="divider"></div>
   </div>
 
@@ -638,6 +687,7 @@
       <label>Place of Birth — 出生地（任意）</label>
       <select id="prefecture">
         <option value="0">選択してください</option>
+        <option value="0">不明／海外</option>
         <option value="-24">北海道</option>
         <option value="-21">青森県</option>
         <option value="-21">岩手県</option>
@@ -710,6 +760,10 @@
       <div class="result-date" id="result-date"></div>
       <div class="result-name" id="result-name"></div>
     </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-ja" onclick="setLang('ja')">日本語</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">English</button>
+    </div>
 
     <!-- Orb visualization -->
     <div class="orb-wrap">
@@ -732,8 +786,18 @@
       <div class="reading-title" id="reading-title"></div>
       <div class="reading-en" id="reading-en"></div>
       <div class="reading-text" id="reading-text"></div>
-      <div class="info-chips" id="info-chips"></div>
     </div>
+
+    <!-- Landscape Reading -->
+    <div class="soul-reading landscape-reading" id="landscape-section" style="display:none">
+      <div class="landscape-label" id="landscape-label">立ち上がる景色</div>
+      <div class="reading-title" id="landscape-title"></div>
+      <div class="reading-text" id="landscape-text"></div>
+    </div>
+
+    <!-- Info Chips (一番下) -->
+    <div class="info-chips" id="info-chips"></div>
+    <div class="endroll">Every soul is a landscape of Earth</div>
   </div>
 
   <!-- Footer -->
@@ -888,7 +952,7 @@ function getKakukyoku(dayKan, monthShi) {
 }
 
 // 景色読み解き生成
-function generateReading(dayKan, counts, missing) {
+function generateReading(dayKan, counts, missing, monthShi) {
   const dayEl = JIKKAN_ELEMENT[JIKKAN.indexOf(dayKan)];
   const dayYinYang = JIKKAN.indexOf(dayKan) % 2 === 0 ? '陽' : '陰';
 
@@ -898,14 +962,142 @@ function generateReading(dayKan, counts, missing) {
     '丙': { title: '真昼の光の魂', en: 'The Noon Sun Soul', text: '惜しみなく光を降り注ぐ太陽のような魂。その存在だけで場が明るくなる。影を作ることも、光の仕事です。' },
     '丁': { title: '静かな灯火の魂', en: 'The Quiet Flame Soul', text: '暗い夜にこそ、その輝きが際立つ炎のような魂。大きくはなくても、確かにそこにある温かさ。消えそうで消えない光。' },
     '戊': { title: '大地の魂', en: 'The Mountain Soul', text: '揺るがない大山のような魂。すべてを受け止め、育む大地。その深い包容力は、多くの命を養います。' },
-    '己': { title: '湿れる土の魂', en: 'The Moist Earth Soul', text: '水を含んだ肥沃な土のような魂。目立たないけれど、すべての命を育む場所。静かに、深く、熱を持つ。' },
-    '庚': { title: '鋼の魂', en: 'The Steel Soul', text: '鍛えられた鋼のような魂。真実を曲げず、正義を貫く。その鋭さは傷つけるためでなく、守るためにある。' },
-    '辛': { title: '宝石の魂', en: 'The Jewel Soul', text: '磨かれた宝石のような魂。その美しさは努力と洗練から生まれる。細部に宿る完璧さを知っています。' },
-    '壬': { title: '深海の魂', en: 'The Deep Ocean Soul', text: '計り知れない深さを持つ大海のような魂。表面は穏やかでも、その内には広大な世界が広がっています。' },
-    '癸': { title: '霧雨の魂', en: 'The Misty Rain Soul', text: '静かに大地を潤す霧雨のような魂。気づかれないほど繊細に、でも確かにすべてに届く優しさを持っています。' }
+    '己': { title: '湿れる土の魂', en: 'The Valley Soul', text: 'すべてを受け止め、育てる大地のような魂。強く主張することはないが、その静かな包容が世界を支えている。' },
+    '庚': { title: '鋼の魂', en: 'The Stone Blade Soul', text: '強く、鋭く、迷いなく進む魂。困難の中でこそその輝きは磨かれ、硬い岩のように揺るがない強さを持つ。' },
+    '辛': { title: '宝石の魂', en: 'The Jewel Soul', text: '磨かれた光のように、静かに美しく輝く魂。その価値は声高に語らずとも、澄んだ光の中に自然と現れる。' },
+    '壬': { title: '深海の魂', en: 'The Ocean Soul', text: '果てしない海のように広がる魂。静かに見えても、その奥には絶えず流れ続ける深い力がある。' },
+    '癸': { title: '霧雨の魂', en: 'The Mist Soul', text: '形を持たず、静かに広がる水の気配のような魂。目には見えにくくても、その存在は世界をやさしく潤している。' }
+  };
+
+  // 日干×月支 120景色
+  const landscapes = {
+    '甲子': { title: '静かな冬の森', text: '深い冬の森。凍った空気の中で、一本の大樹が空へ向かって真っすぐ立っている。葉は落ち、すべてが静まり返っているが、その幹の奥では確かな生命が春を待っている。揺るがない強さが森全体を支えている。' },
+    '甲丑': { title: '眠る大地の森', text: '冷たい大地に覆われた冬の森。雪の下で草木は静かに息を潜めている。その中で、大きな樹だけがどっしりと根を張り、大地と空を結んでいる。静けさの中に、動かぬ力が満ちている。' },
+    '甲寅': { title: '芽吹きの山林', text: 'まだ冷たい風が山を渡る。雪解けの水が流れ始め、若い芽が大地から顔を出す。その中心に、大きな樹が空へ向かって枝を広げている。森は今、静かな始まりの力に満ちている。' },
+    '甲卯': { title: '春光の森', text: 'やわらかな春の光が森いっぱいに広がる。新しい葉が光を受けて輝き、風に揺れている。その中で、大きな樹が堂々と枝を伸ばし、森を覆う天井のように広がっている。生命が空へ向かって伸びていく景色。' },
+    '甲辰': { title: '霞む山の森', text: '春の霞が山を淡く包む。湿った空気の中で、森はゆっくりと息をしている。大きな樹の枝が空へ伸び、見えない空へ続いていく。確かな存在が、静かに世界を支えている。' },
+    '甲巳': { title: '光あふれる若葉の森', text: '初夏の光が森に降り注ぐ。若葉が風に揺れ、空の青さを映している。その中で大きな樹がまっすぐ天へと伸びている。光と緑が満ちる、生命の勢いを感じる景色。' },
+    '甲午': { title: '真夏の深い森', text: '強い太陽が森を照らしている。葉は濃い緑となり、風は重く、生命の気配が満ちている。その中心に、大きな幹の樹が静かに立っている。動かない存在が、森全体を守っているようだ。' },
+    '甲未': { title: '夏の夕暮れの森', text: '夕暮れの光が森を黄金色に染めていく。昼の熱は少しずつ落ち着き、風がゆっくりと流れている。大きな樹の影が長く大地に伸び、静かな安らぎを広げている。' },
+    '甲申': { title: '秋風の森', text: '乾いた秋風が森を通り抜ける。葉は少しずつ色を変え、枝の間から澄んだ空が見える。大きな樹は静かに立ち、変わりゆく季節の中でも揺るがない存在を示している。' },
+    '甲酉': { title: '澄んだ秋の山林', text: '澄み切った空の下、森は落ち着いた光に包まれている。色づいた葉が静かに揺れ、空気は透明に澄んでいる。その中で大きな樹が高く伸び、静かな威厳を放っている。' },
+    '甲戌': { title: '深秋の森', text: '秋が深まり、森の色は落ち着いた金色へ変わる。風が枝を鳴らし、葉が静かに落ちていく。大きな樹はその中心に立ち、長い時間を見守ってきたような静かな強さを感じさせる。' },
+    '甲亥': { title: '冬前の静かな森', text: '冷たい空気が森に戻ってくる。葉はほとんど落ち、枝の輪郭が空に浮かび上がる。その中で、大きな幹の樹が静かに立っている。これから訪れる冬を迎える、深い静けさの景色。' },
+    '乙子': { title: '冬風に揺れる蔓', text: '冬の静かな林。冷たい風が枝の間を通り抜け、細い蔓がゆっくりと揺れている。凍った空気の中でも、その蔓は静かに木へ絡みつき、折れることなく風を受け流している。柔らかな強さが息づく景色。' },
+    '乙丑': { title: '霜の草原', text: '朝の光の中、霜に覆われた草原が広がる。細い草や蔓が白く輝き、冷たい空気の中で静かに揺れている。大地に寄り添うように広がるその姿は、控えめでありながら確かな生命を感じさせる。' },
+    '乙寅': { title: '芽吹く蔓の森', text: '春の始まり。雪解けの水が大地を潤し、細い蔓や若い芽が静かに伸び始めている。大きな木の幹に寄り添いながら、柔らかな緑がゆっくりと森に広がっていく。静かな生命の始まりの景色。' },
+    '乙卯': { title: '若葉の風の丘', text: '春の丘をやわらかな風が渡る。若い草や蔓が光を受けて揺れ、淡い緑が丘一面に広がっている。風に合わせて揺れるその姿は、抵抗せず流れに寄り添う優しい強さを感じさせる。' },
+    '乙辰': { title: '霞む草の斜面', text: '春の霞に包まれた山の斜面。細い草や蔓が湿った空気の中で静かに広がっている。風は穏やかで、すべてがゆっくりと呼吸しているようだ。控えめな緑が大地をやさしく覆っている。' },
+    '乙巳': { title: '初夏の蔓の森', text: '初夏の光が森に降り注ぐ。木の幹に絡む蔓が葉を広げ、光を受けて柔らかな影を作っている。風が通るたびに細い葉が揺れ、静かな生命の気配が森の奥まで広がっていく。' },
+    '乙午': { title: '夏の風の草原', text: '強い日差しの下、広い草原に風が流れている。細い草や蔓が一斉に揺れ、緑の波のように大地を渡っていく。柔らかな動きの中に、大地と風がひとつになるような広がりがある。' },
+    '乙未': { title: '夏の夕暮れの草地', text: '夕暮れの光が草原を淡く染める。昼の熱は静かに落ち着き、細い草や蔓がゆっくりと揺れている。やわらかな光と風が重なり、大地が穏やかな呼吸をしているような景色。' },
+    '乙申': { title: '秋風の野原', text: '乾いた秋風が野原を渡る。細い草や蔓が風に合わせて揺れ、金色に変わり始めた葉が静かに光っている。風に身を任せながらも、しっかりと大地に根を張る静かな力の景色。' },
+    '乙酉': { title: '澄んだ秋の草地', text: '澄んだ空の光が草地を照らす。細い草が静かに揺れ、秋の空気の透明さが広がっている。大地に寄り添うように広がる緑は、控えめでありながら穏やかな生命を感じさせる。' },
+    '乙戌': { title: '深秋の風の丘', text: '秋が深まり、丘の草は落ち着いた色に変わっている。冷たい風が静かに通り、細い蔓や草がゆっくりと揺れる。静かな時間の中で、大地と風が穏やかに重なっている。' },
+    '乙亥': { title: '冬前の野原', text: '冷たい空気が戻り始めた野原。草は色を落とし、風に揺れながら静かに冬を迎えようとしている。それでも細い蔓は大地に寄り添い、静かな生命の気配を残している。' },
+    '丙子': { title: '冬空の太陽', text: '冬の澄んだ空に太陽が高く昇っている。冷たい空気の中で、その光は遠くまで広がり、凍った大地を静かに照らしている。静かな世界の上で、太陽だけが確かな熱と光を放っている。' },
+    '丙丑': { title: '雪原の光', text: '広い雪原の上に太陽の光が降り注ぐ。白い大地がまばゆく輝き、光は静かに遠くまで広がっていく。冷たい空気の中でも、その光だけは確かな温もりを大地へ届けている。' },
+    '丙寅': { title: '春空の太陽', text: '春の青い空に太陽が明るく輝く。柔らかな光が山や森を照らし、まだ冷たい大地に温かな色を落としている。新しい季節を告げる光が、世界をゆっくりと目覚めさせている。' },
+    '丙卯': { title: '光あふれる丘', text: '春の丘に光が降り注ぐ。空は高く澄み、太陽の光が草原を明るく照らしている。風が渡るたびに光が揺れ、広い大地がやさしい輝きに満ちている。' },
+    '丙辰': { title: '霞む太陽の山', text: '春の霞の向こうに太陽が浮かんでいる。柔らかな光が山々を包み込み、空と大地の境界が淡く溶けている。ぼんやりと広がる光が、静かな温もりを世界に届けている。' },
+    '丙巳': { title: '初夏の輝く空', text: '初夏の空に太陽が強く輝いている。青い空の下で光はまっすぐ大地へ降り注ぎ、森や丘を明るく照らしている。生命の勢いが光の中に満ちている景色。' },
+    '丙午': { title: '真夏の太陽', text: '真夏の空の中心に太陽が燃えるように輝く。強い光が大地を照らし、空気さえ熱を帯びて揺れている。圧倒的な光が世界を満たす、力強い景色。' },
+    '丙未': { title: '夏の夕陽', text: '夏の夕暮れ、太陽がゆっくりと地平へ沈んでいく。空は橙色に染まり、柔らかな光が大地を包んでいる。昼の熱が静かにほどけていく、穏やかな光の景色。' },
+    '丙申': { title: '秋空の光', text: '高い秋空に太陽が輝く。空気は澄み、光は遠くまで静かに広がっている。風が大地を渡り、光と影が穏やかに揺れている。' },
+    '丙酉': { title: '澄んだ秋の太陽', text: '澄み切った秋空の中で太陽が静かに輝く。透明な光が山や森を照らし、影がくっきりと大地に落ちている。静かな明るさが広がる景色。' },
+    '丙戌': { title: '深秋の夕陽', text: '秋が深まり、太陽は低い位置から柔らかな光を落としている。空は静かな橙色に染まり、大地は落ち着いた輝きに包まれている。' },
+    '丙亥': { title: '冬前の夕焼け', text: '冷たい空気の中、太陽がゆっくりと沈んでいく。空は静かな赤に染まり、遠くの山の輪郭が淡く浮かび上がる。静かな光が一日の終わりを包んでいる。' },
+    '丁子': { title: '冬夜の灯り', text: '静かな冬の夜。冷たい空気の中で、小さな灯りのような光が静かに揺れている。暗い空の下で、その光だけが温もりを放ち、凍った大地をやさしく照らしている。小さくても確かな光の景色。' },
+    '丁丑': { title: '霜夜の炎', text: '霜に覆われた静かな夜。冷たい空気の中で、小さな炎がゆっくりと揺れている。風は弱く、炎の光が静かに周囲を照らしている。凍った大地の上で、温もりだけが静かに息づいている。' },
+    '丁寅': { title: '春宵の灯火', text: '春の夜。やわらかな風が流れる中で、小さな炎の光が静かに揺れている。暗い空気の中に温かな色が広がり、夜の静けさがやさしく照らされている。' },
+    '丁卯': { title: '月光の丘', text: '静かな春の夜。満月の光が丘を淡く照らしている。草原はやさしい銀色に染まり、風がゆっくりと流れている。強くはない光が、静かな世界をやさしく包んでいる。' },
+    '丁辰': { title: '霞む夜の光', text: '夜の山に薄い霞が漂う。遠くの光がぼんやりと揺れ、静かな明るさが空気に溶けている。はっきりとは見えないその光が、静かな温もりを伝えている。' },
+    '丁巳': { title: '初夏の夜の灯り', text: '初夏の夜。空気は温かく、暗い森の奥に小さな光が揺れている。炎は静かに燃え、やわらかな橙色の光が周囲を穏やかに照らしている。' },
+    '丁午': { title: '夏夜の炎', text: '夏の夜の深い空。静かな闇の中で、炎がゆっくりと揺れている。温かな光が暗い空気をやさしく染め、夜の静けさに柔らかな色を落としている。' },
+    '丁未': { title: '夕暮れの残光', text: '太陽が沈んだ後の空。地平の向こうに残る赤い光が、ゆっくりと薄れていく。空と大地の境界に静かな色が残り、穏やかな余韻が広がっている。' },
+    '丁申': { title: '秋夜の灯り', text: '秋の夜。冷たい風が吹く中で、小さな炎の光が揺れている。暗い空気の中で、その光だけが温かな色を広げ、静かな存在感を放っている。' },
+    '丁酉': { title: '澄んだ月夜', text: '澄み切った秋の夜空。満月の光が静かに大地を照らしている。影はやさしく伸び、世界は淡い銀色に包まれている。' },
+    '丁戌': { title: '深秋の灯火', text: '冷たい夜の空気の中で、小さな灯火が静かに揺れている。暗い世界の中に温かな色が広がり、穏やかな静けさが漂っている。' },
+    '丁亥': { title: '冬前の月光', text: '冬を迎える静かな夜。淡い月光が大地を照らし、空気は静かに澄んでいる。強くはない光が世界をやさしく包み込み、深い静けさを広げている。' },
+    '戊子': { title: '冬の岩山', text: '冬の静かな山。冷たい空気の中で岩山がどっしりと立っている。木々は葉を落とし、すべてが静まり返っているが、山だけは変わらずそこにある。長い時間を越えて存在し続ける、大地の力を感じる景色。' },
+    '戊丑': { title: '雪の山岳', text: '広い山岳地帯が雪に覆われている。白い大地の下で岩の稜線が静かに続いている。空気は冷たく澄み、すべてがゆっくりとした時間の中にある。揺るがない大地の静かな力。' },
+    '戊寅': { title: '春の山の斜面', text: '春の光が山の斜面を照らしている。雪解けの水が流れ、大地の色が少しずつ戻ってくる。岩の稜線は静かに続き、長い時間の中で形づくられた山が大地を支えている。' },
+    '戊卯': { title: '春霞の山並み', text: '春の霞が山々を淡く包んでいる。重なり合う稜線が遠くまで続き、大地の広がりを静かに感じさせる。動かない山の存在が、世界の安定を示している。' },
+    '戊辰': { title: '霞む岩山', text: '湿った空気の中で岩山がぼんやりと浮かんでいる。春の霞が山肌を包み、輪郭はやわらかく溶けている。それでも山は確かにそこにあり、大地の重さを静かに伝えている。' },
+    '戊巳': { title: '初夏の山岳', text: '初夏の光が山の稜線を照らしている。岩と大地の色がはっきりと現れ、山の輪郭が空にくっきりと浮かんでいる。静かな力が山全体に満ちている景色。' },
+    '戊午': { title: '真夏の岩山', text: '強い太陽が岩山を照らしている。影は濃く、山の形がくっきりと浮かび上がる。乾いた空気の中で、山は動かず、ただ静かにそこに存在している。' },
+    '戊未': { title: '夕暮れの山の稜線', text: '夕暮れの光が山の稜線を赤く染める。長い影が大地に落ち、空はゆっくりと色を変えていく。動かない山の姿が、静かな時間の流れを伝えている。' },
+    '戊申': { title: '秋の岩山', text: '乾いた秋の空気の中で岩山が静かに立っている。空は高く澄み、山の輪郭は遠くまで見える。大地の静かな力が空へと続いているような景色。' },
+    '戊酉': { title: '澄んだ秋の山岳', text: '透明な秋空の下、山々の稜線がくっきりと重なっている。遠くまで続くその形は、長い時間をかけて作られた大地の記憶のようだ。' },
+    '戊戌': { title: '深秋の山', text: '秋が深まり、山の色は落ち着いた茶色へ変わる。冷たい風が山肌を渡り、静かな空気が広がっている。揺るがない存在が、大地の中心にあるような景色。' },
+    '戊亥': { title: '冬前の岩山', text: '冬を迎える山。空気は冷たく澄み、岩の稜線が静かに続いている。動くものはほとんどなく、山だけが長い時間の中で静かに立ち続けている。' },
+    '己子': { title: '冬の静かな谷', text: '冬の谷は静かに眠っている。冷たい空気の中で大地は落ち着き、風はゆっくりと谷を渡っていく。山に囲まれたその場所には穏やかな静けさが広がり、すべてを受け止める大地の温もりが残っている。' },
+    '己丑': { title: '霜の草地', text: '朝の光が霜に覆われた草地を照らす。白く輝く大地は静かに広がり、冷たい空気の中でも穏やかな景色をつくっている。すべてを包み込むようなやわらかな大地の広がり。' },
+    '己寅': { title: '春の谷の草原', text: '春の光が谷の草原を照らしている。若い草が大地から静かに芽吹き、風がゆっくりと流れていく。山に囲まれた谷の中で、穏やかな生命の気配が広がっている。' },
+    '己卯': { title: '春風の草地', text: 'やわらかな春風が草地を渡る。細い草が揺れ、丘の下の谷には穏やかな緑が広がっている。大地は静かにすべてを受け止め、生命をやさしく育てている。' },
+    '己辰': { title: '霞む谷の大地', text: '春の霞が谷を淡く包む。湿った空気の中で大地はやわらかく広がり、草や小さな植物が静かに根を張っている。包み込むような大地の静かな景色。' },
+    '己巳': { title: '初夏の草の谷', text: '初夏の光が谷の草原を明るく照らす。風が渡るたびに草がゆっくり揺れ、大地は穏やかな呼吸をしているようだ。静かな豊かさが広がる景色。' },
+    '己午': { title: '真夏の大地', text: '強い日差しの下、大地は温かな色を帯びている。草原がゆっくりと風に揺れ、谷には静かな広がりがある。すべてを受け止める大地の力が感じられる。' },
+    '己未': { title: '夏の夕暮れの谷', text: '夕暮れの光が谷の草地をやさしく染める。風は穏やかで、大地の広がりが静かな安らぎをつくっている。温かな光と大地が溶け合うような景色。' },
+    '己申': { title: '秋の谷の草原', text: '乾いた秋風が谷を通り抜ける。草原は少しずつ色を変え、落ち着いた金色が広がっている。穏やかな大地が季節の移ろいを静かに受け止めている。' },
+    '己酉': { title: '澄んだ秋の草地', text: '透明な秋空の下、谷の草地は静かに広がっている。風がやさしく流れ、大地の落ち着いた色が穏やかな景色をつくっている。' },
+    '己戌': { title: '深秋の大地', text: '秋が深まり、草地の色は落ち着いた茶色へ変わる。冷たい空気が谷を満たし、大地は静かに季節を受け止めている。穏やかな静けさが広がる景色。' },
+    '己亥': { title: '冬前の谷', text: '冬を迎える前の静かな谷。草は色を落とし、風だけがゆっくりと流れている。山に囲まれた大地は静かに広がり、穏やかな時間を抱えている。' },
+    '庚子': { title: '冬の断崖', text: '冬の海に面した断崖が鋭く立っている。冷たい風が岩肌を叩き、波が下で静かに砕けている。硬い岩の輪郭は空に向かってまっすぐ伸び、揺るがない力を感じさせる景色。' },
+    '庚丑': { title: '氷の岩壁', text: '凍った岩壁が空へと続いている。冷たい空気の中で岩の表面は硬く締まり、鋭い輪郭が際立っている。雪と岩が重なる静かな世界に、動かない力が満ちている。' },
+    '庚寅': { title: '春の岩山', text: '春の光が岩山を照らしている。雪が溶け、大地の色が戻り始める中で、岩の稜線はくっきりと空に浮かんでいる。揺るがない山の形が、強い存在感を放っている。' },
+    '庚卯': { title: '光を受ける岩壁', text: '春の光が岩壁に当たり、硬い表面が静かに輝いている。空は澄み、岩の輪郭がはっきりと浮かび上がる。動かない存在の強さが、景色全体を引き締めている。' },
+    '庚辰': { title: '霞む断崖', text: '春の霞の中で断崖がぼんやりと浮かんでいる。輪郭は淡く溶けているが、その形は確かに存在している。硬い岩の静かな強さが、霞の向こうに感じられる景色。' },
+    '庚巳': { title: '初夏の岩稜', text: '初夏の光が岩の稜線を照らす。鋭い山の輪郭が空にくっきりと伸び、乾いた空気の中で強い存在感を放っている。静かな力が山に満ちている景色。' },
+    '庚午': { title: '真夏の岩山', text: '強い太陽が岩山を照らす。影は濃く、岩の形は鋭く際立つ。乾いた風が山を渡り、揺るがない岩の存在が大地の力を伝えている。' },
+    '庚未': { title: '夕暮れの断崖', text: '夕陽が断崖の岩肌を赤く染める。長い影が海へ落ち、空は静かな橙色に変わっていく。鋭い岩の輪郭が、静かな威厳を放つ景色。' },
+    '庚申': { title: '秋風の岩山', text: '乾いた秋風が岩山を吹き抜ける。澄んだ空の下で、岩の稜線は遠くまでくっきりと続いている。揺るがない強さが山の形に現れている。' },
+    '庚酉': { title: '澄んだ秋の断崖', text: '透明な秋空の下、断崖が鋭く空へ突き出している。岩の表面が光を受けて静かに輝き、強い輪郭が景色を引き締めている。' },
+    '庚戌': { title: '深秋の岩壁', text: '秋が深まり、冷たい空気が岩壁を包んでいる。静かな風が通り、岩の輪郭が暗い空に浮かび上がる。揺るがない存在がそこにある。' },
+    '庚亥': { title: '冬前の断崖', text: '冬を迎える海辺の断崖。冷たい空気の中で岩は静かに立ち続けている。波の音だけが響き、岩の硬い輪郭が空へ伸びている。' },
+    '辛子': { title: '霜にきらめく岩肌', text: '冬の朝、冷たい空気の中で岩肌に霜が降りている。細かな結晶が光を受けて静かに輝き、透明な光が凍った空気の中に広がっている。繊細な輝きが静かな世界を満たしている。' },
+    '辛丑': { title: '氷の結晶の大地', text: '凍った大地の上に無数の氷の結晶が広がっている。朝の光を受けてそれぞれが淡く輝き、静かなきらめきが大地全体を包んでいる。透明な光が静かに息づく景色。' },
+    '辛寅': { title: '春光の水晶の岩', text: '春の光が岩の裂け目を照らし、そこに埋もれた水晶が淡く輝いている。透明な結晶が光を反射し、静かな光が岩の中から生まれている。' },
+    '辛卯': { title: '光を集める結晶の岩', text: 'やわらかな春の光が岩の表面に当たり、小さな結晶がきらめいている。控えめな輝きが重なり合い、穏やかな透明感が景色を包んでいる。' },
+    '辛辰': { title: '霞む鉱石の岩場', text: '春の霞に包まれた岩場。ぼんやりとした光の中で鉱石の表面が淡く輝いている。はっきりとは見えないその光が、静かな存在感を放っている。' },
+    '辛巳': { title: '初夏の光の結晶', text: '初夏の光が透明な結晶に当たり、やわらかな輝きを生み出している。小さな光が静かに反射し、澄んだ空気の中で繊細なきらめきが広がっている。' },
+    '辛午': { title: '真夏の輝く鉱石', text: '強い太陽の光が岩の中の鉱石を照らす。硬い表面が鋭く光を返し、明るい輝きが大地の色の中で際立っている。' },
+    '辛未': { title: '夕陽に染まる結晶', text: '夕暮れの光が透明な結晶を赤く染めている。昼の鋭い輝きとは違い、やわらかな光がゆっくりと広がり、静かな温もりが景色を満たしている。' },
+    '辛申': { title: '秋風の水晶岩', text: '乾いた秋風が岩場を通り抜ける。水晶の結晶が澄んだ光を静かに反射し、透明な輝きが冷たい空気の中に広がっている。' },
+    '辛酉': { title: '澄んだ秋の鉱石', text: '澄み切った秋空の光を受けて、鉱石の表面が淡く輝いている。静かな透明感が空気に広がり、落ち着いた美しさが景色を満たしている。' },
+    '辛戌': { title: '深秋の結晶の岩', text: '冷たい空気が岩場を包む。岩の中の結晶が控えめな光を静かに放ち、落ち着いた輝きが深い静けさをつくっている。' },
+    '辛亥': { title: '冬雨の鉱石', text: '冬の雨に濡れた岩肌。鉱石の表面に水滴が集まり、暗い光がゆっくりと揺れている。静かな輝きが冷たい空気の中に広がっている。' },
+    '壬子': { title: '冬の深い海', text: '冬の海が静かに広がっている。暗く深い水面が遠くまで続き、ゆっくりとうねる波が空の色を映している。冷たい風が海を渡り、果てしない水の広がりが静かな力を感じさせる景色。' },
+    '壬丑': { title: '氷海の波', text: '凍てつく空気の下で海が重く揺れている。厚い雲の光が水面に落ち、深い青の波がゆっくりと動いている。広い海の中に、静かな重さと力が満ちている。' },
+    '壬寅': { title: '春の大河', text: '雪解け水が集まり、大きな川となって大地を流れていく。水は力強く動きながらも、広い流れとなって静かに進んでいる。遠くまで続く水の道が大地を貫いている。' },
+    '壬卯': { title: '光きらめく春の水面', text: '春の光が川や湖の水面に反射し、無数の光が揺れている。風が水を動かし、きらめく波紋が広がっていく。穏やかな水の広がりが、静かな明るさをつくっている。' },
+    '壬辰': { title: '霞む水辺', text: '春の霞が水辺を淡く包む。広い水面がぼんやりと空を映し、岸辺の景色がやさしく溶けている。静かな水の広がりが穏やかな空気をつくっている。' },
+    '壬巳': { title: '初夏の広い湖', text: '初夏の空の下、大きな湖が静かに広がっている。風が水面を渡り、小さな波がゆっくりと岸へ向かう。澄んだ水の広がりが穏やかな景色をつくっている。' },
+    '壬午': { title: '真夏の海原', text: '真夏の太陽が広い海を照らしている。青い水面が強い光を反射し、大きな波がゆっくりとうねっている。空と海がつながるような広大な景色。' },
+    '壬未': { title: '夕暮れの海', text: '夕陽が海を黄金色に染めている。ゆっくりと動く波が光を揺らし、空の色が水面に広がっていく。穏やかな水の動きが静かな余韻を残している。' },
+    '壬申': { title: '秋風の大河', text: '乾いた秋風が大きな川を渡る。広い流れは静かに続き、澄んだ空が水面に映っている。遠くまで続く水の道が、穏やかな広がりをつくっている。' },
+    '壬酉': { title: '澄んだ秋の湖', text: '透明な秋空の下、湖の水が静かに広がっている。水面は穏やかに揺れ、空の青が深く映っている。静かな水の広がりが景色を満たしている。' },
+    '壬戌': { title: '深秋の海', text: '秋が深まり、海の色は落ち着いた青へ変わる。波は穏やかに揺れ、静かな水の動きが続いている。広い海がゆっくりと呼吸しているような景色。' },
+    '壬亥': { title: '冬雨の水面', text: '冬の雨が水面に落ち、小さな波紋が広がっていく。灰色の空が水に映り、静かな景色が広がっている。雨と水が重なり、穏やかな流れが続いている。' },
+    '癸子': { title: '霧に包まれる湖', text: '冬の朝、湖の上に淡い霧が広がっている。水面はほとんど動かず、空気の中に溶け込むように静かに存在している。やわらかな白い気配が世界を包み、深い静けさをつくっている。' },
+    '癸丑': { title: '凍った露の草地', text: '冷たい朝の空気の中で、草の先に小さな露が凍りついている。細かな水の粒が光を受けて静かに輝き、繊細なきらめきが大地の上に広がっている。' },
+    '癸寅': { title: '春雨の水辺', text: 'やわらかな春の雨が水辺に落ちる。静かな波紋がゆっくりと広がり、水の動きが大地をやさしく包んでいる。細い雨の音が穏やかな景色を満たしている。' },
+    '癸卯': { title: '露きらめく朝', text: '春の朝、草の先に無数の露が光っている。小さな水滴が光を受けてきらめき、静かな輝きが大地に広がっている。やわらかな水の気配が満ちる景色。' },
+    '癸辰': { title: '霞む小川', text: '春の霞の中、小さな小川が静かに流れている。水は穏やかに動き、やわらかな空気に溶け込んでいる。静かな水の流れが穏やかな景色をつくっている。' },
+    '癸巳': { title: '初夏の湧き水', text: '初夏の森の奥で澄んだ湧き水が静かに流れ出ている。透明な水が小さな流れとなり、大地をやさしく潤している。冷たい水の音が静かな空気に広がる。' },
+    '癸午': { title: '夏の雨の水面', text: '夏の雨が水面に落ち、無数の波紋を作っている。細かな水の動きが広がり、やわらかな景色が静かに生まれている。水の音が穏やかに響いている。' },
+    '癸未': { title: '夕暮れの静かな水辺', text: '夕暮れの水辺に淡い光が広がる。穏やかな水面が空の色を映し、風がゆっくりと流れている。静かな水の気配が穏やかな時間をつくっている。' },
+    '癸申': { title: '秋霧の湖畔', text: '秋の朝、湖畔に霧が立ちこめている。水面は静かに広がり、淡い白い空気に包まれている。やわらかな霧が景色を穏やかに覆っている。' },
+    '癸酉': { title: '澄んだ秋の露', text: '澄んだ秋の朝、草の先に小さな露が並んでいる。透明な水滴が静かに光を反射し、繊細な輝きが静かな景色を作っている。' },
+    '癸戌': { title: '深秋の細雨', text: '秋の終わりの細かな雨が静かに降っている。大地はやわらかく濡れ、水の音が穏やかに響いている。静かな潤いが景色を満たしている。' },
+    '癸亥': { title: '冬霧の水面', text: '冬の静かな朝、水面に淡い霧が広がる。景色はやわらかく包まれ、空と水の境界が静かに溶けている。深い静けさが広がる景色。' },
   };
 
   const r = dayReadings[dayKan] || { title: '魂の景色', en: 'Soul Landscape', text: '' };
+
+  // 日干×月支の景色
+  const landscapeKey = dayKan + (monthShi || '');
+  const landscape = landscapes[landscapeKey];
 
   // 不足五行からの物語
   const missingStories = {
@@ -921,7 +1113,12 @@ function generateReading(dayKan, counts, missing) {
     fullText += '\n\n' + missingStories[missing[0]];
   }
 
-  return { ...r, text: fullText };
+  return {
+    ...r,
+    text: fullText,
+    landscapeTitle: landscape ? landscape.title : null,
+    landscapeText: landscape ? landscape.text : null,
+  };
 }
 
 // オーブ描画
@@ -1087,10 +1284,25 @@ function calculate() {
     });
 
     // Soul Reading
-    const reading = generateReading(dayP.kan, counts, missing);
+    const reading = generateReading(dayP.kan, counts, missing, monthP.shi);
+    window._currentReading = reading;
+    window._currentLang = 'ja';
+    window._currentDayKan = dayP.kan;
+    window._currentMissing = missing;
+    window._currentLandscapeKey = dayP.kan + monthP.shi;
     document.getElementById('reading-title').textContent = reading.title;
     document.getElementById('reading-en').textContent = reading.en;
     document.getElementById('reading-text').textContent = reading.text;
+
+    // Landscape Reading (2層目)
+    const landscapeSection = document.getElementById('landscape-section');
+    if (reading.landscapeTitle && reading.landscapeText) {
+      document.getElementById('landscape-title').textContent = reading.landscapeTitle;
+      document.getElementById('landscape-text').textContent = reading.landscapeText;
+      landscapeSection.style.display = 'block';
+    } else {
+      landscapeSection.style.display = 'none';
+    }
 
     // Chips
     const chips = document.getElementById('info-chips');
@@ -1148,6 +1360,189 @@ function calculate() {
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter') calculate();
 });
+
+// ========================================
+// 言語切り替え / Language Toggle
+// ========================================
+const EN_TRANSLATIONS = {
+  soulTitles: {
+    '甲': 'A soul that rises straight toward the sky like a great tree. Never bending, never breaking — only upward. Its quiet strength becomes a forest that gently supports all around it.',
+    '乙': 'A flexible soul that takes root wherever it grows, swaying in the wind. It knows that true strength lies not in rigidity, but in resilience.',
+    '丙': 'A soul like the sun, pouring light without reservation. Its very presence brightens the room. Even casting shadows is part of its work.',
+    '丁': 'A soul whose light shines brightest in the dark of night. Small, yet undeniably warm. A flame that flickers but never goes out.',
+    '戊': 'A soul like an unmovable mountain. It receives and nurtures all things. Its deep embrace sustains many lives.',
+    '己': 'A soul like the earth that receives and nurtures everything. It does not assert itself loudly, yet its quiet embrace holds the world together.',
+    '庚': 'A soul like a blade forged from stone and metal. Strong, clear, and unwavering. Its strength is shaped through pressure, becoming sharper with time.',
+    '辛': 'A soul that shines quietly and beautifully, like a polished jewel. Its worth reveals itself naturally in clear light, without need for proclamation.',
+    '壬': 'A soul that spreads like an endless sea. Beneath its calm surface, a deep current flows ceaselessly.',
+    '癸': 'A soul like water itself — formless, gently spreading. Though hard to see, it quietly nourishes the world.',
+  },
+  enLandscapes: {
+    '甲子': { title: 'A Silent Winter Forest', text: 'In the deep stillness of winter, a forest rests beneath the cold sky.\nAmong the bare trees, one tall tree rises straight upward.\nThough its leaves have fallen, a quiet vitality sleeps within its trunk,\nholding life patiently through the frozen season.' },
+    '甲丑': { title: 'A Resting Earth Forest', text: 'The land lies calm beneath the pale winter sky.\nRoots stretch deep into the soil, anchoring a tall tree firmly in the earth.\nNothing moves, yet a quiet strength fills the forest,\nbinding sky and ground in silent balance.' },
+    '甲寅': { title: 'A Mountain Forest Awakening', text: 'A soft wind moves through the mountains as winter begins to loosen its grip.\nSnow melts into the soil and young buds begin to appear.\nAmong them, a tall tree lifts its branches toward the sky,\nand the forest quietly fills with the first breath of spring.' },
+    '甲卯': { title: 'A Spring Forest of New Light', text: 'Gentle sunlight spreads through a forest newly dressed in leaves.\nFresh green branches reach outward and upward,\ncatching the light as a living canopy grows across the sky.\nLife rises steadily from the earth.' },
+    '甲辰': { title: 'A Misty Mountain Forest', text: 'Spring mist drifts slowly through the mountain forest.\nMoist air softens the outlines of the trees as their branches stretch into unseen heights.\nWithin the quiet haze, a tall tree stands firmly,\na silent presence supporting the living world around it.' },
+    '甲巳': { title: 'A Forest of Early Summer Light', text: 'The first warmth of early summer fills the forest.\nLeaves shimmer gently in the breeze while sunlight filters through the branches.\nIn the center stands a tall tree, reaching steadily upward,\nits quiet vitality spreading through the living green.' },
+    '甲午': { title: 'A Deep Summer Forest', text: 'Under the bright summer sun, the forest grows thick and vibrant.\nLeaves glow with life while the warm wind moves slowly through the canopy.\nAt the heart of the forest, a towering tree stands calm and steady,\nits presence silently protecting the life around it.' },
+    '甲未': { title: 'A Late Summer Forest at Dusk', text: 'Evening light washes the forest in soft gold.\nThe heat of the day fades as long shadows stretch across the ground.\nA tall tree stands quietly among them,\nholding the forest in a calm and gentle breath.' },
+    '甲申': { title: 'An Autumn Mountain Forest', text: 'Clear autumn wind moves through the mountain forest.\nThe air is crisp and bright as branches sway lightly in the sky.\nThe tall tree rises above the changing leaves,\nsteady and grounded within the quiet season.' },
+    '甲酉': { title: 'A Clear Autumn Forest', text: 'Under a bright autumn sky, the forest stands open and calm.\nGolden leaves shimmer softly as the wind moves through them.\nAmong them, a tall tree lifts its branches high,\nrooted deeply in the earth beneath the clear light.' },
+    '甲戌': { title: 'A Deep Autumn Woodland', text: 'Autumn deepens and the forest grows quiet.\nThe colors darken into warm shades of amber and red.\nA tall tree remains standing with quiet dignity,\nholding the memory of the passing season.' },
+    '甲亥': { title: 'A Snow-Covered Forest', text: 'Snow falls silently across the forest.\nWhite branches stretch toward the pale winter sky.\nAmong them, a tall tree stands unmoving,\nits strength resting beneath the calm of winter.' },
+    '乙子': { title: 'A Quiet Winter Grove', text: 'In the still air of winter, slender branches rest among quiet trees.\nFrost clings softly to the forest floor as pale light filters through the bare canopy.\nEven in the cold silence, small vines remain alive, patiently waiting for warmth to return.' },
+    '乙丑': { title: 'A Sleeping Field of Roots', text: 'The earth lies calm beneath the pale winter sky.\nHidden beneath the soil, fine roots spread quietly through the ground.\nNothing stirs above, yet life moves gently below the surface.' },
+    '乙寅': { title: 'A Forest of Early Shoots', text: 'As winter loosens its hold, soft green shoots begin to appear.\nYoung vines stretch carefully along the forest floor,\ngrowing slowly toward the returning light of spring.' },
+    '乙卯': { title: 'A Spring Meadow of Vines', text: 'Warm spring light fills the open meadow.\nTender vines weave through the grass, moving gently with the wind.\nThe earth breathes quietly beneath the growing green.' },
+    '乙辰': { title: 'A Misty Valley Garden', text: 'Spring mist drifts slowly through a quiet valley.\nSoft vines climb over stones and soil, their leaves touched by moisture and light.\nThe landscape feels calm, alive with quiet growth.' },
+    '乙巳': { title: 'A Green Canopy of Early Summer', text: 'Early summer warmth spreads through the forest.\nVines climb lightly through the branches, reaching toward the sunlight above.\nLeaves rustle softly as the wind passes through the living green.' },
+    '乙午': { title: 'A Summer Field in Motion', text: 'Under the bright summer sky, grasses and vines sway together in the wind.\nThe air feels warm and alive as green life spreads across the open land.\nMovement fills the landscape with quiet vitality.' },
+    '乙未': { title: 'A Golden Meadow at Dusk', text: 'Evening light paints the meadow in soft gold.\nVines curl gently through the tall grass as the warm wind fades.\nThe earth settles into a calm and peaceful glow.' },
+    '乙申': { title: 'A Windy Autumn Field', text: 'Clear autumn wind moves across the open land.\nSlender vines sway gently among the fading grass.\nThe sky stretches wide above the quiet earth.' },
+    '乙酉': { title: 'A Clear Autumn Garden', text: 'Under the bright autumn sky, delicate leaves shimmer in the crisp air.\nFine vines rest lightly across the soil and stones.\nEverything feels calm, balanced, and quietly alive.' },
+    '乙戌': { title: 'A Quiet Late-Autumn Field', text: 'The land grows quiet as autumn deepens.\nVines rest low along the earth while the colors of the season soften.\nA peaceful stillness settles across the field.' },
+    '乙亥': { title: 'A Snow-Touched Garden', text: 'Soft snow begins to fall across the silent ground.\nDelicate vines lie beneath a thin white veil.\nEven in winter\'s quiet, life sleeps gently within the earth.' },
+    '丙子': { title: 'A Winter Sun Over Snowfields', text: 'The winter sun rises over a wide field of snow.\nCold air glitters as light spreads across the silent land.\nEven in the stillness of winter, warmth begins to return.' },
+    '丙丑': { title: 'A Pale Sun Above Frozen Earth', text: 'Soft sunlight rests over frozen ground.\nThe earth remains quiet beneath the cold sky,\nyet the gentle glow hints at the warmth hidden within the season.' },
+    '丙寅': { title: 'A Spring Sun Through the Mountains', text: 'Morning light pours over the awakening mountains.\nSnow melts into streams while warm sunlight touches the forest.\nThe world slowly opens beneath the growing brightness.' },
+    '丙卯': { title: 'A Bright Spring Meadow', text: 'Clear sunlight fills a wide spring meadow.\nFresh grass shimmers as the breeze moves through it.\nThe air feels open, alive with warmth and light.' },
+    '丙辰': { title: 'Sunlight Through Spring Mist', text: 'Golden light filters through drifting spring mist.\nThe landscape glows softly as the sun lifts above the horizon.\nWarmth spreads quietly across the waking earth.' },
+    '丙巳': { title: 'Early Summer Sunlight', text: 'The early summer sun shines warmly over the land.\nLeaves glow in the bright light as wind moves through the forest.\nLife rises confidently beneath the radiant sky.' },
+    '丙午': { title: 'The High Summer Sun', text: 'At noon, the summer sun burns bright in a cloudless sky.\nLight floods the earth with powerful warmth.\nEverything stands clear and vivid beneath its brilliance.' },
+    '丙未': { title: 'A Golden Summer Evening', text: 'The sun lowers gently toward the horizon.\nGolden light spreads across fields and hills,\nwrapping the land in warmth before the coming night.' },
+    '丙申': { title: 'A Clear Autumn Sun', text: 'Autumn sunlight shines through crisp, dry air.\nThe land glows quietly beneath the calm sky.\nLight feels softer now, yet still steady and bright.' },
+    '丙酉': { title: 'Sunlight Over Autumn Fields', text: 'Bright autumn light stretches across open fields.\nGolden grasses sway under the wide sky.\nThe sun rests peacefully over the changing earth.' },
+    '丙戌': { title: 'A Deep Autumn Sunset', text: 'The sun sinks slowly behind distant hills.\nAmber light spreads across the sky as evening deepens.\nThe last warmth of the day lingers on the land.' },
+    '丙亥': { title: 'Winter Sunset Glow', text: 'The winter sun fades into a pale horizon.\nSoft red light colors the quiet sky while cold air settles over the earth.\nEven as the day ends, the warmth of the sun remains.' },
+    '丁子': { title: 'A Lantern in the Winter Night', text: 'In the depth of winter night, a small light glows softly.\nCold air surrounds the silent land, yet the gentle flame remains steady.\nIts quiet warmth brings a calm presence to the darkness.' },
+    '丁丑': { title: 'A Hidden Hearth in Winter', text: 'Within the stillness of winter, a small fire rests beneath sheltering stone.\nThe earth remains cold and quiet outside,\nbut the steady flame holds a quiet warmth within.' },
+    '丁寅': { title: 'A First Flame of Spring', text: 'As winter loosens, a gentle flame glows in the cool evening air.\nThe forest begins to stir with life again,\nand the small light shines calmly among the awakening world.' },
+    '丁卯': { title: 'A Candle in the Spring Breeze', text: 'A single flame flickers softly in the warm spring air.\nFresh wind moves through the night, yet the light remains steady.\nIts glow feels quiet and alive.' },
+    '丁辰': { title: 'Firelight Through the Spring Mist', text: 'Soft mist drifts through the evening landscape.\nA small flame glows through the haze,\nits light spreading gently into the quiet air.' },
+    '丁巳': { title: 'A Summer Lantern', text: 'In the warm evening of early summer, a lantern shines quietly.\nSoft wind moves through the trees while the small light glows steadily.\nIts warmth feels calm and welcoming.' },
+    '丁午': { title: 'A Fire Under the Summer Stars', text: 'Under a wide summer sky, a small flame dances gently.\nStars shine above while the fire glows below,\nbringing warmth into the open night.' },
+    '丁未': { title: 'A Soft Flame at Dusk', text: 'Evening settles slowly over the land.\nA quiet flame burns as the last light fades from the sky.\nIts glow remains steady in the growing darkness.' },
+    '丁申': { title: 'A Clear Autumn Lantern', text: 'In the crisp air of autumn night, a lantern shines calmly.\nThe wind moves softly through fallen leaves,\nwhile the small flame continues to glow.' },
+    '丁酉': { title: 'A Candle in the Autumn Night', text: 'Under a clear autumn sky, a gentle candle burns quietly.\nIts light reflects softly against the still night air,\ncreating a calm and peaceful glow.' },
+    '丁戌': { title: 'A Late Autumn Fire', text: 'As autumn deepens, a small fire warms the cool evening.\nThe air grows quiet while the flame flickers softly.\nIts presence feels steady and comforting.' },
+    '丁亥': { title: 'A Winter Flame in the Snow', text: 'Snow falls quietly through the winter night.\nA small flame glows against the pale white landscape,\nbringing warmth into the silent cold.' },
+    '戊子': { title: 'A Winter Mountain Ridge', text: 'Under the pale winter sky, a mountain ridge rises above the frozen land.\nCold wind moves across the quiet slopes,\nwhile the mountain stands unmoved in the stillness of winter.' },
+    '戊丑': { title: 'A Snow-Covered Highland', text: 'Thick snow rests upon the wide highlands.\nThe earth lies heavy and silent beneath the white surface,\nholding a deep and patient strength.' },
+    '戊寅': { title: 'A Mountain Awakening in Spring', text: 'As spring approaches, the mountain slowly awakens.\nMelting snow feeds small streams that flow down the slopes.\nThe vast earth begins to breathe again.' },
+    '戊卯': { title: 'A Green Mountain Valley', text: 'Spring spreads across the mountain valley.\nFresh grass covers the slopes as soft wind moves through the open land.\nThe earth feels alive beneath the wide sky.' },
+    '戊辰': { title: 'A Misty Mountain Range', text: 'Soft mist drifts across a distant mountain range.\nThe peaks appear and disappear through the quiet haze.\nThe earth feels vast and ancient beneath the drifting clouds.' },
+    '戊巳': { title: 'A Sunlit Summer Plateau', text: 'Bright sunlight spreads across a wide summer plateau.\nWarm wind moves across the open land as the earth rests beneath the glowing sky.' },
+    '戊午': { title: 'A Mountain Under the High Summer Sun', text: 'Under the strong summer sun, the mountain rises boldly against the sky.\nIts rocky slopes hold the heat of the day,\nstanding steady beneath the vast blue horizon.' },
+    '戊未': { title: 'A Golden Mountain at Dusk', text: 'Evening light paints the mountain slopes in warm gold.\nThe land grows quiet as the sun slowly lowers beyond the hills.' },
+    '戊申': { title: 'An Autumn Mountain Range', text: 'Clear autumn air stretches across distant mountains.\nDry wind moves through the valleys,\nwhile the peaks remain calm beneath the open sky.' },
+    '戊酉': { title: 'A Bright Autumn Highland', text: 'Under the clear autumn sky, the highlands shine with quiet light.\nThe earth spreads wide and open beneath the crisp air.' },
+    '戊戌': { title: 'A Deep Autumn Ridge', text: 'Autumn deepens across the mountain ridge.\nThe colors grow darker while cool wind moves across the silent slopes.' },
+    '戊亥': { title: 'A Snowy Mountain Horizon', text: 'Winter snow settles across distant mountains.\nThe land grows silent beneath the pale sky,\nas the mountains stand quietly in the cold horizon.' },
+    '己子': { title: 'A Quiet Winter Valley', text: 'In the quiet of winter, a wide valley rests beneath the pale sky.\nCold air settles softly over the land,\nwhile the earth holds its silent strength beneath the frost.' },
+    '己丑': { title: 'A Sleeping Winter Field', text: 'The winter field lies still beneath the muted sky.\nThe soil rests quietly, holding the promise of life deep within the ground.' },
+    '己寅': { title: 'A Valley Awakening in Spring', text: 'As spring approaches, the valley slowly awakens.\nSmall streams begin to move through the earth,\nand fresh life stirs beneath the warming soil.' },
+    '己卯': { title: 'A Gentle Spring Meadow', text: 'Soft grass spreads across a peaceful meadow.\nWarm sunlight touches the earth while a gentle breeze moves quietly through the field.' },
+    '己辰': { title: 'A Misty Valley Plain', text: 'Morning mist drifts slowly across the valley plain.\nThe earth feels calm and steady beneath the quiet sky.' },
+    '己巳': { title: 'A Fertile Summer Field', text: 'Under the warmth of early summer, the soil grows rich and alive.\nGreen life spreads gently across the land, rooted deeply in the earth.' },
+    '己午': { title: 'A Warm Summer Meadow', text: 'The summer sun warms the open meadow.\nThe earth holds the heat of the day while life grows steadily across the field.' },
+    '己未': { title: 'A Golden Harvest Field', text: 'Golden light spreads across the fields of late summer.\nThe earth feels full and generous beneath the glowing sky.' },
+    '己申': { title: 'An Autumn Valley', text: 'Cool autumn air moves quietly through the valley.\nThe land rests beneath the open sky as the season begins to turn.' },
+    '己酉': { title: 'A Clear Autumn Meadow', text: 'Under the bright autumn sky, the meadow lies calm and open.\nThe earth feels balanced beneath the crisp air.' },
+    '己戌': { title: 'A Deep Autumn Field', text: 'As autumn deepens, the fields grow quiet.\nThe soil rests after the long season of growth.' },
+    '己亥': { title: 'A Snow-Covered Valley', text: 'Soft snow settles across the valley floor.\nThe land rests beneath the white silence of winter,\nholding life quietly beneath the surface.' },
+    '庚子': { title: 'Frozen Cliffs in Winter', text: 'Under the cold winter sky, sharp cliffs rise above frozen ground.\nThe wind moves across the stone face while the land remains silent and still.' },
+    '庚丑': { title: 'A Stone Ridge in the Cold', text: 'A rugged stone ridge stretches across the winter land.\nThe air is cold and heavy, while the hard rock stands firm against the quiet sky.' },
+    '庚寅': { title: 'A Rocky Mountain Awakening', text: 'As spring approaches, sunlight touches the rugged mountain rocks.\nSnow begins to melt from the stone slopes,\nrevealing the strength of the earth beneath.' },
+    '庚卯': { title: 'A Bright Rocky Cliff', text: 'Clear spring light falls across a steep cliff face.\nThe stone stands sharp and solid under the open sky.' },
+    '庚辰': { title: 'A Mountain of Stone and Mist', text: 'Mist moves slowly through a mountain of jagged stone.\nThe cliffs appear through the drifting clouds,\nstanding firm against the shifting air.' },
+    '庚巳': { title: 'A Sunlit Rocky Plateau', text: 'Under the early summer sun, a rocky plateau stretches across the land.\nThe stone reflects the bright light while warm wind moves across the open ground.' },
+    '庚午': { title: 'A Blazing Summer Cliff', text: 'The summer sun burns against a towering cliff face.\nHeat radiates from the stone while the sky stretches wide above it.' },
+    '庚未': { title: 'A Golden Stone Ridge', text: 'Evening light turns the stone ridge golden.\nLong shadows fall across the rough terrain as the day begins to fade.' },
+    '庚申': { title: 'A Clear Autumn Rock Face', text: 'Crisp autumn air surrounds a tall rock face.\nThe cliff rises sharply against the bright sky.' },
+    '庚酉': { title: 'A Bright Autumn Stone Field', text: 'Under the clear autumn sky, scattered stones lie across the open land.\nTheir surfaces glow quietly beneath the sunlight.' },
+    '庚戌': { title: 'A Dark Autumn Ridge', text: 'As autumn deepens, the rocky ridge grows darker beneath the cooling sky.\nThe wind moves across the stone in steady silence.' },
+    '庚亥': { title: 'Snow on the Stone Cliffs', text: 'Winter snow gathers along the edges of the cliffs.\nWhite lines trace the rugged stone while the land rests beneath the cold sky.' },
+    '辛子': { title: 'Frost Crystals at Dawn', text: 'In the quiet winter dawn, frost crystals form across the frozen ground.\nEach tiny shard catches the pale morning light,\nglimmering softly in the still air.' },
+    '辛丑': { title: 'Frozen Earth in Winter Light', text: 'The winter earth lies frozen beneath a muted sky.\nThin layers of ice reflect the soft daylight,\ncreating a quiet shimmer across the silent land.' },
+    '辛寅': { title: 'Crystal Streams of Early Spring', text: 'As winter fades, clear water flows gently through the land.\nSunlight touches the surface of the stream,\nscattering small flashes of light among the stones.' },
+    '辛卯': { title: 'Dewlit Spring Meadow', text: 'Morning dew rests across a wide spring meadow.\nEach drop glows softly in the rising sunlight,\nturning the grass into a field of quiet light.' },
+    '辛辰': { title: 'Mist and Crystal Light', text: 'Spring mist drifts slowly across the valley.\nThrough the pale haze, light reflects off small stones and water,\ncreating a delicate shimmer within the quiet landscape.' },
+    '辛巳': { title: 'Sunlight on Summer Water', text: 'Early summer sunlight dances across a clear stream.\nThe water reflects countless points of light,\nsparkling gently beneath the warm sky.' },
+    '辛午': { title: 'Bright Reflections of Summer', text: 'Under the bright summer sun, light reflects sharply from water and stone.\nThe landscape glitters with warmth and clarity.' },
+    '辛未': { title: 'A Golden Crystal Evening', text: 'Evening light turns the land golden.\nDew and small stones reflect the fading sunlight,\nglowing softly as the day comes to rest.' },
+    '辛申': { title: 'Clear Autumn Crystals', text: 'The crisp autumn air sharpens the light of the day.\nClear stones and frost reflect the sky,\nshining quietly across the land.' },
+    '辛酉': { title: 'Autumn Light on Stone', text: 'Under the bright autumn sky, smooth stones catch the sunlight.\nTheir surfaces reflect a calm and steady glow.' },
+    '辛戌': { title: 'Frost of Late Autumn', text: 'As autumn deepens, frost forms across the quiet ground.\nThe tiny crystals sparkle briefly in the morning light.' },
+    '辛亥': { title: 'Winter Ice Reflections', text: 'Thin ice spreads across still water in winter.\nThe frozen surface reflects the pale sky,\nholding a silent, crystalline light.' },
+    '壬子': { title: 'A Quiet Winter Sea', text: 'The winter sea stretches endlessly beneath a pale sky.\nSlow waves roll across the dark water,\ncarrying the quiet power of the open ocean.' },
+    '壬丑': { title: 'A Cold Northern Ocean', text: 'Heavy clouds gather above a cold northern sea.\nDeep water moves slowly beneath the wind,\nholding a silent strength within its vast depths.' },
+    '壬寅': { title: 'A River Born from Snowmelt', text: 'As winter melts away, a great river begins to flow.\nSnowmelt gathers into strong currents,\nmoving steadily across the waking land.' },
+    '壬卯': { title: 'Sunlight on Spring Waters', text: 'Spring sunlight reflects across wide waters.\nThe surface shimmers gently as the current flows beneath,\nquietly carrying life forward.' },
+    '壬辰': { title: 'Mist Rising from Water', text: 'Soft mist rises from the wide surface of a lake.\nThe water moves slowly beneath the pale sky,\nholding the calm breath of the morning.' },
+    '壬巳': { title: 'A Summer Lake Under Open Sky', text: 'A vast lake lies beneath the clear summer sky.\nWarm wind moves gently across the water,\nsending soft ripples toward the distant shore.' },
+    '壬午': { title: 'The Endless Summer Ocean', text: 'Under the bright summer sun, the ocean stretches without end.\nWaves rise and fall beneath the open sky,\ncarrying the endless motion of the sea.' },
+    '壬未': { title: 'A Golden Sea at Dusk', text: 'Evening light spreads across the surface of the sea.\nGolden waves move slowly as the sun lowers toward the horizon.' },
+    '壬申': { title: 'An Autumn River', text: 'A wide river flows through the cool air of autumn.\nIts steady current moves quietly across the land.' },
+    '壬酉': { title: 'A Clear Autumn Lake', text: 'Under a bright autumn sky, a lake reflects the clear blue above.\nThe surface remains calm and deep.' },
+    '壬戌': { title: 'A Deep Autumn Sea', text: 'As autumn deepens, the sea grows darker beneath the cooling sky.\nSlow waves continue their endless rhythm.' },
+    '壬亥': { title: 'Winter Rain on Open Water', text: 'Cold rain falls across a wide stretch of water.\nSmall ripples spread across the surface,\nblending rain and sea into one quiet movement.' },
+    '癸子': { title: 'A Misty Winter Lake', text: 'In the quiet winter morning, soft mist spreads across the surface of a still lake.\nThe water and sky blend gently together,\nholding the calm breath of the cold season.' },
+    '癸丑': { title: 'Frozen Dew at Dawn', text: 'In the pale light of early morning, tiny drops of dew freeze upon the grass.\nEach delicate crystal reflects the quiet light of winter.' },
+    '癸寅': { title: 'A Spring Rain Begins', text: 'A gentle spring rain falls across the waking land.\nSmall ripples spread across pools of water,\nsoftly nourishing the earth.' },
+    '癸卯': { title: 'Morning Dew in Spring', text: 'Fresh dew rests across the green grass of early morning.\nEach drop catches the rising sunlight,\nglimmering softly across the meadow.' },
+    '癸辰': { title: 'A Misty Stream in Spring', text: 'A small stream moves quietly through the misty valley.\nSoft fog drifts above the flowing water,\nblurring the edges of the landscape.' },
+    '癸巳': { title: 'A Hidden Spring in Summer', text: 'In the quiet forest, clear water emerges from a hidden spring.\nThe small stream flows gently across the stones,\nbringing cool life to the summer earth.' },
+    '癸午': { title: 'Summer Rain on Water', text: 'Warm summer rain falls across the surface of the water.\nTiny ripples spread outward,\nmerging rain and lake into one soft movement.' },
+    '癸未': { title: 'A Quiet Water\'s Edge at Dusk', text: 'Evening light fades along the quiet edge of the water.\nThe surface remains still, reflecting the soft colors of the sky.' },
+    '癸申': { title: 'Autumn Mist Over a Lake', text: 'Morning mist rises slowly from the surface of a calm lake.\nThe quiet water holds the cool breath of autumn.' },
+    '癸酉': { title: 'Clear Dew of Autumn', text: 'On a crisp autumn morning, dew gathers across the grass.\nEach tiny drop shines briefly in the clear light.' },
+    '癸戌': { title: 'A Gentle Autumn Rain', text: 'Soft rain falls across the quiet land.\nThe earth drinks the water slowly,\nwelcoming the calm rhythm of the season.' },
+    '癸亥': { title: 'Winter Fog Over Water', text: 'A pale winter fog spreads across the surface of the water.\nThe landscape fades softly into the mist,\nholding a deep and quiet stillness.' },
+  },
+  missingStories: {
+    '木': 'Your landscape holds no rocky ground — only soft earth stretching wide.',
+    '火': 'Your landscape is a world just before dawn. A longing for light moves the scene.',
+    '土': 'Your landscape is a river and open sky — endless freedom with no fixed place.',
+    '金': 'Your landscape has no boundaries or edges. Feeling deeply, rather than forming, is your nature.',
+    '水': 'Your landscape lives in dry light. A thirst for moisture becomes the source of your creation.',
+  },
+};
+
+function setLang(lang) {
+  window._currentLang = lang;
+  document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  const r = window._currentReading;
+  if (!r) return;
+
+  if (lang === 'ja') {
+    document.getElementById('reading-title').textContent = r.title;
+    document.getElementById('reading-en').textContent = r.en;
+    document.getElementById('reading-text').textContent = r.text;
+    if (r.landscapeTitle) {
+      document.getElementById('landscape-label').textContent = '立ち上がる景色';
+      document.getElementById('landscape-title').textContent = r.landscapeTitle;
+      document.getElementById('landscape-text').textContent = r.landscapeText;
+    }
+  } else {
+    const kan = window._currentDayKan;
+    const enText_soul = EN_TRANSLATIONS.soulTitles[kan] || r.text;
+    let enFull = enText_soul;
+    if (window._currentMissing && window._currentMissing.length > 0) {
+      enFull += '\n\n' + (EN_TRANSLATIONS.missingStories[window._currentMissing[0]] || '');
+    }
+    document.getElementById('reading-title').textContent = r.en;
+    document.getElementById('reading-en').textContent = r.en;
+    document.getElementById('reading-text').textContent = enFull;
+    if (r.landscapeTitle) {
+      const enL = EN_TRANSLATIONS.enLandscapes[window._currentLandscapeKey];
+      document.getElementById('landscape-label').textContent = 'The Rising Landscape';
+      document.getElementById('landscape-title').textContent = enL ? enL.title : r.landscapeTitle;
+      document.getElementById('landscape-text').textContent = enL ? enL.text : r.landscapeText;
+    }
+  }
+}
+
 </script>
 </body>
 </html>
