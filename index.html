@@ -647,6 +647,30 @@ input[type=number] { -moz-appearance: textfield; }
 <div style="position:fixed;top:10px;left:10px;z-index:99999;background:red;color:white;padding:8px;">
 TEST OK 2026-03-10
 </div>
+
+  <script>
+window.addEventListener('error', function(e) {
+  var box = document.createElement('pre');
+  box.style.position = 'fixed';
+  box.style.left = '10px';
+  box.style.right = '10px';
+  box.style.top = '70px';
+  box.style.zIndex = '99999';
+  box.style.background = 'rgba(0,0,0,0.9)';
+  box.style.color = '#ff8080';
+  box.style.padding = '12px';
+  box.style.fontSize = '12px';
+  box.style.whiteSpace = 'pre-wrap';
+  box.style.border = '1px solid #ff8080';
+  box.textContent =
+    'JS ERROR\n' +
+    'message: ' + e.message + '\n' +
+    'line: ' + e.lineno + '\n' +
+    'col: ' + e.colno;
+  document.body.appendChild(box);
+});
+</script>
+  
 <div class="bg-atmosphere"></div>
 <div class="bg-grain"></div>
 
