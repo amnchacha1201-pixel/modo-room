@@ -2995,19 +2995,6 @@ function setLang(lang) {
 }
 
 </script>
-<script>
-window.addEventListener('error', function(e) {
-  var box = document.createElement('pre');
-  box.style.cssText = 'position:fixed;left:10px;right:10px;top:10px;z-index:99999;background:rgba(0,0,0,0.9);color:#ff8080;padding:12px;font-size:12px;white-space:pre-wrap;border:1px solid #ff8080';
-  box.textContent = 'JS ERROR\nmessage: ' + e.message + '\nline: ' + e.lineno + '\ncol: ' + e.colno;
-  document.body.appendChild(box);
-});
-window.addEventListener('DOMContentLoaded', function() {
-  var boot = document.createElement('div');
-  boot.style.cssText = 'position:fixed;bottom:10px;right:10px;z-index:99999;background:rgba(0,128,0,0.9);color:#fff;padding:8px 10px;font-size:12px';
-  boot.textContent = 'JS BOOT OK';
-  document.body.appendChild(boot);
-});
-</script>
+
 </body>
 </html>
