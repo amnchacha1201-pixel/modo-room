@@ -1,17 +1,17 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="四柱推命の命式から、あなたの魂の景色を読み解きます。MODO ROOM — Soul Element Generator">
-  <meta property="og:title" content="Soul Element Generator — MODO ROOM">
+  <meta name="description" content="四柱推命の命式から、あなたの魂の景色を読み解きます。MODO ROOM - Soul Element Generator">
+  <meta property="og:title" content="Soul Element Generator - MODO ROOM">
   <meta property="og:description" content="あなたの命は、ひとつの風景。四柱推命の命式から、あなたの魂の五行を可視化します。">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#0e0c0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>MODO ROOM — Soul Element Generator</title>
+<title>MODO ROOM - Soul Element Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
@@ -28,656 +28,630 @@
     --gold: #c9a96e;
   }
 
-- { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-background: #0e0c0a;
-color: var(–mist);
-font-family: ‘Cormorant Garamond’, ‘Noto Serif JP’, serif;
-min-height: 100vh;
-overflow-x: hidden;
-}
-
-/* — Atmospheric background — */
-.bg-atmosphere {
-position: fixed;
-inset: 0;
-z-index: 0;
-background:
-radial-gradient(ellipse 80% 60% at 20% 80%, rgba(106,138,159,0.08) 0%, transparent 60%),
-radial-gradient(ellipse 60% 80% at 80% 20%, rgba(196,121,106,0.06) 0%, transparent 60%),
-radial-gradient(ellipse 100% 100% at 50% 50%, rgba(30,25,20,1) 0%, #0e0c0a 100%);
-}
-
-.bg-grain {
-position: fixed;
-inset: 0;
-z-index: 0;
-opacity: 0.03;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 200 200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);
-background-size: 150px 150px;
-}
-
-/* — Layout — */
-.container {
-position: relative;
-z-index: 1;
-max-width: 520px;
-margin: 0 auto;
-padding: 60px 32px 80px;
-}
-
-/* — Header — */
-.header {
-text-align: center;
-margin-bottom: 64px;
-opacity: 0;
-animation: fadeUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.logo {
-font-size: 11px;
-letter-spacing: 0.3em;
-color: var(–dawn);
-text-transform: uppercase;
-margin-bottom: 16px;
-}
-
-.title {
-font-size: clamp(28px, 7vw, 38px);
-font-weight: 300;
-font-style: italic;
-letter-spacing: 0.05em;
-color: var(–light);
-line-height: 1.2;
-margin-bottom: 12px;
-}
-
-.subtitle {
-font-size: 12px;
-letter-spacing: 0.25em;
-color: var(–fog);
-font-family: ‘Noto Serif JP’, serif;
-font-weight: 200;
-}
-
-.divider {
-width: 1px;
-height: 40px;
-background: linear-gradient(to bottom, transparent, var(–dawn), transparent);
-margin: 28px auto;
-}
-
-/* — Form — */
-.form-section {
-opacity: 0;
-animation: fadeUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
-}
-
-.form-prose {
-font-size: 13px;
-color: var(–fog);
-text-align: center;
-line-height: 2;
-margin-bottom: 40px;
-font-family: ‘Noto Serif JP’, serif;
-font-weight: 200;
-letter-spacing: 0.08em;
-}
-
-.field-group {
-margin-bottom: 28px;
-}
-
-label {
-display: block;
-font-size: 10px;
-letter-spacing: 0.3em;
-text-transform: uppercase;
-color: var(–dawn);
-margin-bottom: 10px;
-}
-
-.field-row {
-display: flex;
-gap: 8px;
-align-items: center;
-}
-
-.field-unit {
-display: flex;
-align-items: center;
-gap: 6px;
-flex: 1;
-}
-
-.field-unit span {
-font-size: 11px;
-color: var(–fog);
-white-space: nowrap;
-font-family: ‘Noto Serif JP’, serif;
-}
-
-input[type=“number”], select {
-background: rgba(255,255,255,0.03);
-border: 1px solid rgba(201,195,187,0.15);
-color: var(–light);
-font-family: ‘Cormorant Garamond’, serif;
-font-size: 16px;
-font-weight: 300;
-padding: 12px 14px;
-border-radius: 2px;
-width: 100%;
-outline: none;
-transition: border-color 0.3s, background 0.3s;
--webkit-appearance: none;
-appearance: none;
-}
-
-input[type=“number”]:focus, select:focus {
-border-color: rgba(201,169,110,0.4);
-background: rgba(255,255,255,0.05);
-}
-
-input[type=“number”] { width: 90px; flex-shrink: 0; }
-.input-sm { width: 70px !important; }
-
-select {
-background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘6’ viewBox=‘0 0 10 6’%3E%3Cpath d=‘M1 1l4 4 4-4’ stroke=’%23c9c3bb’ fill=‘none’ stroke-width=‘1’/%3E%3C/svg%3E”);
-background-repeat: no-repeat;
-background-position: right 12px center;
-padding-right: 32px;
-cursor: pointer;
-}
-
-select option {
-background: #1a1714;
-color: var(–light);
-}
-
-/* — Gender toggle — */
-.gender-toggle {
-display: flex;
-gap: 0;
-border: 1px solid rgba(201,195,187,0.15);
-border-radius: 2px;
-overflow: hidden;
-}
-
-.gender-btn {
-flex: 1;
-padding: 12px;
-background: transparent;
-border: none;
-color: var(–fog);
-font-family: ‘Noto Serif JP’, serif;
-font-size: 13px;
-font-weight: 200;
-cursor: pointer;
-transition: all 0.3s;
-letter-spacing: 0.1em;
-}
-
-.gender-btn.active {
-background: rgba(201,169,110,0.12);
-color: var(–gold);
-}
-
-/* — Submit button — */
-.btn-submit {
-width: 100%;
-padding: 18px;
-background: transparent;
-border: 1px solid rgba(201,169,110,0.3);
-color: var(–gold);
-font-family: ‘Cormorant Garamond’, serif;
-font-size: 13px;
-font-style: italic;
-letter-spacing: 0.3em;
-cursor: pointer;
-transition: all 0.4s;
-margin-top: 40px;
-border-radius: 2px;
-position: relative;
-overflow: hidden;
-}
-
-.btn-submit::before {
-content: ‘’;
-position: absolute;
-inset: 0;
-background: rgba(201,169,110,0.06);
-transform: scaleX(0);
-transform-origin: left;
-transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
-}
-
-.btn-submit:hover::before { transform: scaleX(1); }
-.btn-submit:hover { border-color: rgba(201,169,110,0.6); }
-
-/* — Result — */
-#result {
-display: none;
-opacity: 0;
-transition: opacity 0.8s;
-margin-top: 60px;
-}
-
-#result.visible {
-display: block;
-opacity: 1;
-}
-
-.result-header {
-text-align: center;
-margin-bottom: 48px;
-}
-
-.result-date {
-font-size: 11px;
-letter-spacing: 0.25em;
-color: var(–dawn);
-margin-bottom: 8px;
-}
-
-.result-name {
-font-size: 24px;
-font-weight: 300;
-font-style: italic;
-color: var(–light);
-letter-spacing: 0.08em;
-}
-
-/* — Orb — */
-.orb-wrap {
-display: flex;
-justify-content: center;
-margin: 40px 0;
-position: relative;
-}
-
-.orb-glow {
-position: absolute;
-width: 220px;
-height: 220px;
-border-radius: 50%;
-filter: blur(40px);
-opacity: 0.3;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-transition: background 1s ease;
-}
-
-.orb-canvas {
-width: 200px;
-height: 200px;
-border-radius: 50%;
-position: relative;
-z-index: 1;
-overflow: hidden;
-box-shadow: 0 0 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,255,255,0.05);
-}
-
-/* — Pillars table — */
-.pillars-grid {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 1px;
-background: rgba(201,195,187,0.1);
-border: 1px solid rgba(201,195,187,0.1);
-margin-bottom: 40px;
-border-radius: 2px;
-overflow: hidden;
-}
-
-.pillar-header {
-background: rgba(201,169,110,0.06);
-text-align: center;
-padding: 10px 4px;
-font-size: 9px;
-letter-spacing: 0.25em;
-color: var(–dawn);
-text-transform: uppercase;
-}
-
-.pillar-cell {
-background: rgba(255,255,255,0.02);
-text-align: center;
-padding: 14px 4px;
-}
-
-.pillar-kan {
-font-size: 22px;
-font-weight: 300;
-color: var(–light);
-display: block;
-margin-bottom: 4px;
-}
-
-.pillar-element {
-font-size: 10px;
-color: var(–fog);
-letter-spacing: 0.1em;
-font-family: ‘Noto Serif JP’, serif;
-}
-
-.pillar-chi {
-font-size: 18px;
-color: var(–mist);
-font-weight: 300;
-display: block;
-margin-bottom: 4px;
-}
-
-/* — Five elements — */
-.elements-section {
-margin-bottom: 40px;
-}
-
-.section-label {
-font-size: 10px;
-letter-spacing: 0.3em;
-text-transform: uppercase;
-color: var(–dawn);
-margin-bottom: 20px;
-text-align: center;
-}
-
-.element-bars {
-display: flex;
-flex-direction: column;
-gap: 10px;
-}
-
-.element-row {
-display: flex;
-align-items: center;
-gap: 14px;
-}
-
-.element-name {
-width: 50px;
-font-size: 11px;
-letter-spacing: 0.15em;
-color: var(–fog);
-font-style: italic;
-}
-
-.element-bar-bg {
-flex: 1;
-height: 2px;
-background: rgba(255,255,255,0.06);
-border-radius: 1px;
-overflow: hidden;
-}
-
-.element-bar-fill {
-height: 100%;
-border-radius: 1px;
-transition: width 1.2s cubic-bezier(0.16,1,0.3,1);
-width: 0;
-}
-
-.element-count {
-width: 20px;
-text-align: right;
-font-size: 12px;
-color: var(–fog);
-font-style: italic;
-}
-
-.element-bar-fill.wood  { background: linear-gradient(to right, #5a7a4e, #7a9e6a); }
-.element-bar-fill.fire  { background: linear-gradient(to right, #9e4a3a, #c4796a); }
-.element-bar-fill.earth { background: linear-gradient(to right, #8c7055, #b09070); }
-.element-bar-fill.metal { background: linear-gradient(to right, #7a8090, #a0b0c0); }
-.element-bar-fill.water { background: linear-gradient(to right, #3a6a8c, #6a9aaf); }
-
-/* — Soul reading — */
-.soul-reading {
-border-top: 1px solid rgba(201,195,187,0.1);
-padding-top: 40px;
-margin-top: 40px;
-}
-
-.reading-title {
-font-size: 18px;
-font-style: italic;
-font-weight: 300;
-color: var(–light);
-margin-bottom: 6px;
-letter-spacing: 0.05em;
-}
-
-.reading-en {
-font-size: 10px;
-letter-spacing: 0.25em;
-color: var(–dawn);
-text-transform: uppercase;
-margin-bottom: 16px;
-}
-
-.lang-toggle {
-display: flex;
-gap: 8px;
-margin: 20px 0 8px;
-justify-content: flex-end;
-}
-.lang-btn {
-background: transparent;
-border: 1px solid rgba(200,170,120,0.3);
-color: var(–mist);
-font-size: 10px;
-letter-spacing: 0.15em;
-padding: 5px 14px;
-border-radius: 20px;
-cursor: pointer;
-font-family: ‘Cormorant Garamond’, serif;
-transition: all 0.3s;
-}
-.lang-btn.active {
-border-color: var(–dawn);
-color: var(–dawn);
-}
-
-.soul-message {
-margin: 2.5rem 1rem 0;
-padding: 1.8rem 1.5rem;
-border-top: 1px solid rgba(200,195,187,0.2);
-text-align: center;
-}
-.soul-message-label {
-font-family: ‘Cormorant Garamond’, serif;
-font-size: 0.65rem;
-letter-spacing: 0.2em;
-color: var(–dawn);
-text-transform: uppercase;
-margin-bottom: 1rem;
-}
-.soul-message p {
-font-family: ‘Noto Serif JP’, serif;
-font-size: 0.88rem;
-color: var(–mist);
-line-height: 2.1;
-white-space: pre-line;
-letter-spacing: 0.03em;
-}
-
-.endroll {
-margin-top: 48px;
-font-size: 11px;
-letter-spacing: 0.22em;
-color: var(–dawn);
-font-family: ‘Cormorant Garamond’, serif;
-font-style: italic;
-opacity: 0.6;
-text-align: center;
-}
-
-.landscape-reading {
-margin-top: 40px;
-padding-top: 36px;
-border-top: 1px solid rgba(200,180,150,0.15);
-}
-
-.landscape-label {
-font-size: 10px;
-letter-spacing: 0.3em;
-color: var(–dawn);
-text-transform: uppercase;
-margin-bottom: 16px;
-opacity: 0.8;
-}
-
-.reading-text {
-font-size: 14px;
-font-family: ‘Noto Serif JP’, serif;
-font-weight: 200;
-color: var(–fog);
-line-height: 2.2;
-letter-spacing: 0.06em;
-}
-
-/* — Info chips — */
-.info-chips {
-display: flex;
-flex-wrap: wrap;
-gap: 8px;
-margin-top: 28px;
-}
-
-.chip {
-padding: 6px 14px;
-border: 1px solid rgba(201,195,187,0.12);
-border-radius: 20px;
-font-size: 11px;
-color: var(–fog);
-letter-spacing: 0.1em;
-font-style: italic;
-}
-
-.chip.highlight {
-border-color: rgba(201,169,110,0.3);
-color: var(–gold);
-}
-
-/* — Footer — */
-.footer {
-text-align: center;
-margin-top: 80px;
-padding-top: 40px;
-border-top: 1px solid rgba(201,195,187,0.08);
-}
-
-.footer-logo {
-font-size: 20px;
-font-style: italic;
-font-weight: 300;
-letter-spacing: 0.1em;
-color: var(–dawn);
-}
-
-.footer-tag {
-font-size: 10px;
-letter-spacing: 0.2em;
-color: var(–stone);
-margin-top: 8px;
-}
-
-/* — Loading — */
-.loading {
-display: none;
-text-align: center;
-padding: 40px;
-color: var(–fog);
-font-style: italic;
-font-size: 13px;
-letter-spacing: 0.2em;
-}
-
-.loading.visible { display: block; }
-
-.loading-dots span {
-animation: blink 1.4s infinite;
-opacity: 0;
-}
-.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes blink { 0%,80%,100% { opacity:0 } 40% { opacity:1 } }
-
-/* — Animations — */
-@keyframes fadeUp {
-from { opacity:0; transform: translateY(24px); }
-to { opacity:1; transform: translateY(0); }
-}
-
-/* — Error — */
-.error-msg {
-color: var(–ember);
-font-size: 12px;
-text-align: center;
-padding: 12px;
-font-family: ‘Noto Serif JP’, serif;
-font-weight: 200;
-letter-spacing: 0.1em;
-display: none;
-}
-
-/* Hide number input spinners */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-input[type=number] { -moz-appearance: textfield; }
-
-/* Touch tap highlight off */
-
-- { -webkit-tap-highlight-color: transparent; }
-
-/* iOS safe area padding */
-.container { padding-bottom: max(80px, env(safe-area-inset-bottom)); }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(201,195,187,0.15); border-radius: 2px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0e0c0a;
+    color: var(--mist);
+    font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* - Atmospheric background - */
+  .bg-atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 80%, rgba(106,138,159,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 20%, rgba(196,121,106,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 100% 100% at 50% 50%, rgba(30,25,20,1) 0%, #0e0c0a 100%);
+  }
+
+  .bg-grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
+  }
+
+  /* - Layout - */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 60px 32px 80px;
+  }
+
+  /* - Header - */
+  .header {
+    text-align: center;
+    margin-bottom: 64px;
+    opacity: 1;
+    animation: fadeUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .logo {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--dawn);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .title {
+    font-size: clamp(28px, 7vw, 38px);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.05em;
+    color: var(--light);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: var(--fog);
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 200;
+  }
+
+  .divider {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--dawn), transparent);
+    margin: 28px auto;
+  }
+
+  /* - Form - */
+  .form-section {
+    opacity: 1;
+    animation: fadeUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  }
+
+  .form-prose {
+    font-size: 13px;
+    color: var(--fog);
+    text-align: center;
+    line-height: 2;
+    margin-bottom: 40px;
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 200;
+    letter-spacing: 0.08em;
+  }
+
+  .field-group {
+    margin-bottom: 28px;
+  }
+
+  label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dawn);
+    margin-bottom: 10px;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .field-unit {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .field-unit span {
+    font-size: 11px;
+    color: var(--fog);
+    white-space: nowrap;
+    font-family: 'Noto Serif JP', serif;
+  }
+
+  input[type="number"], select {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,195,187,0.15);
+    color: var(--light);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 300;
+    padding: 12px 14px;
+    border-radius: 2px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.3s, background 0.3s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input[type="number"]:focus, select:focus {
+    border-color: rgba(201,169,110,0.4);
+    background: rgba(255,255,255,0.05);
+  }
+
+  input[type="number"] { width: 90px; flex-shrink: 0; }
+  .input-sm { width: 70px !important; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23c9c3bb' fill='none' stroke-width='1'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+    cursor: pointer;
+  }
+
+  select option {
+    background: #1a1714;
+    color: var(--light);
+  }
+
+  /* - Gender toggle - */
+  .gender-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid rgba(201,195,187,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .gender-btn {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    color: var(--fog);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    font-weight: 200;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.1em;
+  }
+
+  .gender-btn.active {
+    background: rgba(201,169,110,0.12);
+    color: var(--gold);
+  }
+
+  /* - Submit button - */
+  .btn-submit {
+    width: 100%;
+    padding: 18px;
+    background: transparent;
+    border: 1px solid rgba(201,169,110,0.3);
+    color: var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    letter-spacing: 0.3em;
+    cursor: pointer;
+    transition: all 0.4s;
+    margin-top: 40px;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(201,169,110,0.06);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .btn-submit:hover::before { transform: scaleX(1); }
+  .btn-submit:hover { border-color: rgba(201,169,110,0.6); }
+
+  /* - Result - */
+  #result {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    margin-top: 60px;
+    position: relative;
+    z-index: 2;
+  }
+
+  #result.visible {
+    opacity: 1;
+  }
+
+  .result-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .result-date {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--dawn);
+    margin-bottom: 8px;
+  }
+
+  .result-name {
+    font-size: 24px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--light);
+    letter-spacing: 0.08em;
+  }
+
+  /* - Orb - */
+  .orb-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+    position: relative;
+  }
+
+  .orb-glow {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.3;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: background 1s ease;
+  }
+
+  .orb-canvas {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,0,0,0.5), inset 0 0 30px rgba(255,255,255,0.05);
+  }
+
+  /* - Pillars table - */
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(201,195,187,0.1);
+    border: 1px solid rgba(201,195,187,0.1);
+    margin-bottom: 40px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .pillar-header {
+    background: rgba(201,169,110,0.06);
+    text-align: center;
+    padding: 10px 4px;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--dawn);
+    text-transform: uppercase;
+  }
+
+  .pillar-cell {
+    background: rgba(255,255,255,0.02);
+    text-align: center;
+    padding: 14px 4px;
+  }
+
+  .pillar-kan {
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--light);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .pillar-element {
+    font-size: 10px;
+    color: var(--fog);
+    letter-spacing: 0.1em;
+    font-family: 'Noto Serif JP', serif;
+  }
+
+  .pillar-chi {
+    font-size: 18px;
+    color: var(--mist);
+    font-weight: 300;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* - Five elements - */
+  .elements-section {
+    margin-bottom: 40px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dawn);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .element-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .element-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .element-name {
+    width: 50px;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--fog);
+    font-style: italic;
+  }
+
+  .element-bar-bg {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .element-bar-fill {
+    height: 100%;
+    border-radius: 1px;
+    transition: width 1.2s cubic-bezier(0.16,1,0.3,1);
+    width: 0;
+  }
+
+  .element-count {
+    width: 20px;
+    text-align: right;
+    font-size: 12px;
+    color: var(--fog);
+    font-style: italic;
+  }
+
+  .element-bar-fill.wood  { background: linear-gradient(to right, #5a7a4e, #7a9e6a); }
+  .element-bar-fill.fire  { background: linear-gradient(to right, #9e4a3a, #c4796a); }
+  .element-bar-fill.earth { background: linear-gradient(to right, #8c7055, #b09070); }
+  .element-bar-fill.metal { background: linear-gradient(to right, #7a8090, #a0b0c0); }
+  .element-bar-fill.water { background: linear-gradient(to right, #3a6a8c, #6a9aaf); }
+
+  /* - Soul reading - */
+  .soul-reading {
+    border-top: 1px solid rgba(201,195,187,0.1);
+    padding-top: 40px;
+    margin-top: 40px;
+  }
+
+  .reading-title {
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--light);
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .reading-en {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--dawn);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .lang-toggle {
+    display: flex;
+    gap: 8px;
+    margin: 20px 0 8px;
+    justify-content: flex-end;
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid rgba(200,170,120,0.3);
+    color: var(--mist);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    transition: all 0.3s;
+  }
+  .lang-btn.active {
+    border-color: var(--dawn);
+    color: var(--dawn);
+  }
+
+  .soul-message {
+    margin: 2.5rem 1rem 0;
+    padding: 1.8rem 1.5rem;
+    border-top: 1px solid rgba(200,195,187,0.2);
+    text-align: center;
+  }
+  .soul-message-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--dawn);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .soul-message p {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.88rem;
+    color: var(--mist);
+    line-height: 2.1;
+    white-space: pre-line;
+    letter-spacing: 0.03em;
+  }
+
+  .endroll {
+    margin-top: 48px;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--dawn);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    opacity: 0.6;
+    text-align: center;
+  }
+
+  .landscape-reading {
+    margin-top: 40px;
+    padding-top: 36px;
+    border-top: 1px solid rgba(200,180,150,0.15);
+  }
+
+  .landscape-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--dawn);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+
+  .reading-text {
+    font-size: 14px;
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 200;
+    color: var(--fog);
+    line-height: 2.2;
+    letter-spacing: 0.06em;
+  }
+
+  /* - Info chips - */
+  .info-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 28px;
+  }
+
+  .chip {
+    padding: 6px 14px;
+    border: 1px solid rgba(201,195,187,0.12);
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--fog);
+    letter-spacing: 0.1em;
+    font-style: italic;
+  }
+
+  .chip.highlight {
+    border-color: rgba(201,169,110,0.3);
+    color: var(--gold);
+  }
+
+  /* - Footer - */
+  .footer {
+    text-align: center;
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(201,195,187,0.08);
+  }
+
+  .footer-logo {
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--dawn);
+  }
+
+  .footer-tag {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--stone);
+    margin-top: 8px;
+  }
+
+  /* - Loading - */
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    color: var(--fog);
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+  }
+
+  .loading.visible { display: block; }
+
+  .loading-dots span {
+    animation: blink 1.4s infinite;
+    opacity: 0;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes blink { 0%,80%,100% { opacity:0 } 40% { opacity:1 } }
+
+  /* - Animations - */
+  @keyframes fadeUp {
+    from { opacity:1; transform: translateY(16px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  /* - Error - */
+  .error-msg {
+    color: var(--ember);
+    font-size: 12px;
+    text-align: center;
+    padding: 12px;
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 200;
+    letter-spacing: 0.1em;
+    display: none;
+  }
+
+  /* Hide number input spinners */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
+
+  /* Touch tap highlight off */
+  * { -webkit-tap-highlight-color: transparent; }
+
+  /* iOS safe area padding */
+  .container { padding-bottom: max(80px, env(safe-area-inset-bottom)); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(201,195,187,0.15); border-radius: 2px; }
 </style>
-
 </head>
 <body>
-<div style="position:fixed;top:10px;left:10px;z-index:99999;background:red;color:white;padding:8px;">
-TEST OK 2026-03-10
-</div>
 
-  <script>
-window.addEventListener('error', function(e) {
-  var box = document.createElement('pre');
-  box.style.position = 'fixed';
-  box.style.left = '10px';
-  box.style.right = '10px';
-  box.style.top = '70px';
-  box.style.zIndex = '99999';
-  box.style.background = 'rgba(0,0,0,0.9)';
-  box.style.color = '#ff8080';
-  box.style.padding = '12px';
-  box.style.fontSize = '12px';
-  box.style.whiteSpace = 'pre-wrap';
-  box.style.border = '1px solid #ff8080';
-  box.textContent =
-    'JS ERROR\n' +
-    'message: ' + e.message + '\n' +
-    'line: ' + e.lineno + '\n' +
-    'col: ' + e.colno;
-  document.body.appendChild(box);
-});
-</script>
-  
 <div class="bg-atmosphere"></div>
 <div class="bg-grain"></div>
 
 <div class="container">
 
   <!-- Header -->
-
   <div class="header">
     <div class="logo">Modo Room</div>
     <h1 class="title">Soul Element Generator</h1>
@@ -686,134 +660,128 @@ window.addEventListener('error', function(e) {
   </div>
 
   <!-- Form -->
-
   <div class="form-section">
     <p class="form-prose">
-      生まれた日時をそっと教えてください。<br>
-      あなたの魂の景色を、静かに読み解きます。
+      生まれた日時を、そっと教えてください。<br>
+      あなたの命式の地図をひらきます。
     </p>
 
-```
-<!-- 生年月日 -->
-<div class="field-group">
-  <label>Date of Birth — 生年月日</label>
-  <div class="field-row">
-    <div class="field-unit">
-      <input type="number" id="year" placeholder="yyyy" min="1900" max="2024" value="">
-      <span>年</span>
+    <!-- 生年月日 -->
+    <div class="field-group">
+      <label>Date of Birth - 生年月日</label>
+      <div class="field-row">
+        <div class="field-unit">
+          <input type="number" id="year" placeholder="yyyy" min="1900" max="2024" value="">
+          <span>年</span>
+        </div>
+        <div class="field-unit">
+          <input type="number" id="month" placeholder="mm" min="1" max="12" class="input-sm" value="">
+          <span>月</span>
+        </div>
+        <div class="field-unit">
+          <input type="number" id="day" placeholder="dd" min="1" max="31" class="input-sm" value="">
+          <span>日</span>
+        </div>
+      </div>
     </div>
-    <div class="field-unit">
-      <input type="number" id="month" placeholder="mm" min="1" max="12" class="input-sm" value="">
-      <span>月</span>
+
+    <!-- 出生時刻 -->
+    <div class="field-group">
+      <label>Time of Birth - 出生時刻（任意）</label>
+      <div class="field-row">
+        <div class="field-unit">
+          <input type="number" id="hour" placeholder="hh" min="0" max="23" class="input-sm" value="">
+          <span>時</span>
+        </div>
+        <div class="field-unit">
+          <input type="number" id="minute" placeholder="mm" min="0" max="59" class="input-sm" value="">
+          <span>分</span>
+        </div>
+      </div>
     </div>
-    <div class="field-unit">
-      <input type="number" id="day" placeholder="dd" min="1" max="31" class="input-sm" value="">
-      <span>日</span>
+
+    <!-- 性別 -->
+    <div class="field-group">
+      <label>Gender - 性別</label>
+      <div class="gender-toggle">
+        <button class="gender-btn active" onclick="selectGender('female', this)">女性</button>
+        <button class="gender-btn" onclick="selectGender('male', this)">男性</button>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- 出生時刻 -->
-<div class="field-group">
-  <label>Time of Birth — 出生時刻（任意）</label>
-  <div class="field-row">
-    <div class="field-unit">
-      <input type="number" id="hour" placeholder="hh" min="0" max="23" class="input-sm" value="">
-      <span>時</span>
+    <!-- 出生地 -->
+    <div class="field-group">
+      <label>Place of Birth - 出生地（任意）</label>
+      <select id="prefecture">
+        <option value="0">選択してください</option>
+        <option value="0">不明／海外</option>
+        <option value="-24">北海道</option>
+        <option value="-21">青森県</option>
+        <option value="-21">岩手県</option>
+        <option value="-20">宮城県</option>
+        <option value="-21">秋田県</option>
+        <option value="-21">山形県</option>
+        <option value="-20">福島県</option>
+        <option value="-19">茨城県</option>
+        <option value="-19">栃木県</option>
+        <option value="-19">群馬県</option>
+        <option value="-19">埼玉県</option>
+        <option value="-19">千葉県</option>
+        <option value="-19">東京都</option>
+        <option value="-19">神奈川県</option>
+        <option value="-18">新潟県</option>
+        <option value="-18">富山県</option>
+        <option value="-18">石川県</option>
+        <option value="-18">福井県</option>
+        <option value="-18">山梨県</option>
+        <option value="-19">長野県</option>
+        <option value="-18">岐阜県</option>
+        <option value="-18">静岡県</option>
+        <option value="-18">愛知県</option>
+        <option value="-17">三重県</option>
+        <option value="-17">滋賀県</option>
+        <option value="-17">京都府</option>
+        <option value="-17">大阪府</option>
+        <option value="-17">兵庫県</option>
+        <option value="-17">奈良県</option>
+        <option value="-17">和歌山県</option>
+        <option value="-16">鳥取県</option>
+        <option value="-16">島根県</option>
+        <option value="-16">岡山県</option>
+        <option value="-16">広島県</option>
+        <option value="-15">山口県</option>
+        <option value="-15">徳島県</option>
+        <option value="-15">香川県</option>
+        <option value="-15">愛媛県</option>
+        <option value="-15">高知県</option>
+        <option value="-14">福岡県</option>
+        <option value="-14">佐賀県</option>
+        <option value="-14">長崎県</option>
+        <option value="-14">熊本県</option>
+        <option value="-14">大分県</option>
+        <option value="-14">宮崎県</option>
+        <option value="-14">鹿児島県</option>
+        <option value="-10">沖縄県</option>
+      </select>
+      <div style="font-size:10px;color:var(--stone);margin-top:8px;letter-spacing:0.1em;font-family:'Noto Serif JP',serif;font-weight:200;">
+        ※ 地方時補正（標準時との誤差）に使用します
+      </div>
     </div>
-    <div class="field-unit">
-      <input type="number" id="minute" placeholder="mm" min="0" max="59" class="input-sm" value="">
-      <span>分</span>
-    </div>
-  </div>
-</div>
 
-<!-- 性別 -->
-<div class="field-group">
-  <label>Gender — 性別</label>
-  <div class="gender-toggle">
-    <button class="gender-btn active" onclick="selectGender('female', this)">女性</button>
-    <button class="gender-btn" onclick="selectGender('male', this)">男性</button>
-  </div>
-</div>
+    <div class="error-msg" id="error">生年月日を正しく入力してください。</div>
 
-<!-- 出生地 -->
-<div class="field-group">
-  <label>Place of Birth — 出生地（任意）</label>
-  <select id="prefecture">
-    <option value="0">選択してください</option>
-    <option value="0">不明／海外</option>
-    <option value="-24">北海道</option>
-    <option value="-21">青森県</option>
-    <option value="-21">岩手県</option>
-    <option value="-20">宮城県</option>
-    <option value="-21">秋田県</option>
-    <option value="-21">山形県</option>
-    <option value="-20">福島県</option>
-    <option value="-19">茨城県</option>
-    <option value="-19">栃木県</option>
-    <option value="-19">群馬県</option>
-    <option value="-19">埼玉県</option>
-    <option value="-19">千葉県</option>
-    <option value="-19">東京都</option>
-    <option value="-19">神奈川県</option>
-    <option value="-18">新潟県</option>
-    <option value="-18">富山県</option>
-    <option value="-18">石川県</option>
-    <option value="-18">福井県</option>
-    <option value="-18">山梨県</option>
-    <option value="-19">長野県</option>
-    <option value="-18">岐阜県</option>
-    <option value="-18">静岡県</option>
-    <option value="-18">愛知県</option>
-    <option value="-17">三重県</option>
-    <option value="-17">滋賀県</option>
-    <option value="-17">京都府</option>
-    <option value="-17">大阪府</option>
-    <option value="-17">兵庫県</option>
-    <option value="-17">奈良県</option>
-    <option value="-17">和歌山県</option>
-    <option value="-16">鳥取県</option>
-    <option value="-16">島根県</option>
-    <option value="-16">岡山県</option>
-    <option value="-16">広島県</option>
-    <option value="-15">山口県</option>
-    <option value="-15">徳島県</option>
-    <option value="-15">香川県</option>
-    <option value="-15">愛媛県</option>
-    <option value="-15">高知県</option>
-    <option value="-14">福岡県</option>
-    <option value="-14">佐賀県</option>
-    <option value="-14">長崎県</option>
-    <option value="-14">熊本県</option>
-    <option value="-14">大分県</option>
-    <option value="-14">宮崎県</option>
-    <option value="-14">鹿児島県</option>
-    <option value="-10">沖縄県</option>
-  </select>
-  <div style="font-size:10px;color:var(--stone);margin-top:8px;letter-spacing:0.1em;font-family:'Noto Serif JP',serif;font-weight:200;">
-    ※ 地方時補正（標準時との誤差）に使用します
-  </div>
-</div>
-
-<div class="error-msg" id="error">生年月日を正しく入力してください。</div>
-
-<button class="btn-submit" onclick="calculate()">
-  命式を読み解く — Read My Soul
-</button>
-```
-
+    <button class="btn-submit" onclick="calculate()">
+      命式を読み解く - Read My Soul
+    </button>
   </div>
 
   <!-- Loading -->
-
   <div class="loading" id="loading">
     命の景色を読み解いています
     <div class="loading-dots"><span>.</span><span>.</span><span>.</span></div>
   </div>
 
   <!-- Result -->
-
   <div id="result">
     <div class="result-header">
       <div class="result-date" id="result-date"></div>
@@ -824,111 +792,62 @@ window.addEventListener('error', function(e) {
       <button class="lang-btn" id="btn-en" onclick="setLang('en')">English</button>
     </div>
 
-```
-<!-- Orb visualization -->
-<div class="orb-wrap">
-  <div class="orb-glow" id="orb-glow"></div>
-  <canvas class="orb-canvas" id="orb-canvas" width="200" height="200"></canvas>
-</div>
+    <!-- Orb visualization -->
+    <div class="orb-wrap">
+      <div class="orb-glow" id="orb-glow"></div>
+      <canvas class="orb-canvas" id="orb-canvas" width="200" height="200"></canvas>
+    </div>
 
-<!-- Pillars -->
-<div class="section-label" style="margin-bottom:16px">Four Pillars — 命式</div>
-<div class="pillars-grid" id="pillars-grid"></div>
+    <!-- Pillars -->
+    <div class="section-label" style="margin-bottom:16px">Four Pillars - 命式</div>
+    <div class="pillars-grid" id="pillars-grid"></div>
 
-<!-- Five Elements -->
-<div class="elements-section">
-  <div class="section-label">Five Elements — 五行</div>
-  <div class="element-bars" id="element-bars"></div>
-</div>
+    <!-- Five Elements -->
+    <div class="elements-section">
+      <div class="section-label">Five Elements - 五行</div>
+      <div class="element-bars" id="element-bars"></div>
+    </div>
 
-<!-- Soul Reading -->
-<div class="soul-reading">
-  <div class="reading-title" id="reading-title"></div>
-  <div class="reading-en" id="reading-en"></div>
-  <div class="reading-text" id="reading-text"></div>
-</div>
+    <!-- Soul Reading -->
+    <div class="soul-reading">
+      <div class="reading-title" id="reading-title"></div>
+      <div class="reading-en" id="reading-en"></div>
+      <div class="reading-text" id="reading-text"></div>
+    </div>
 
-<!-- Missing Story -->
-<div class="soul-reading" id="missing-section" style="display:none">
-  <div class="reading-text" id="missing-text"></div>
-</div>
+    <!-- Missing Story -->
+    <div class="soul-reading" id="missing-section" style="display:none">
+      <div class="reading-text" id="missing-text"></div>
+    </div>
 
-<!-- Landscape Reading -->
-<div class="soul-reading landscape-reading" id="landscape-section" style="display:none">
-  <div class="landscape-label" id="landscape-label">立ち上がる景色</div>
-  <div class="reading-title" id="landscape-title"></div>
-  <div class="reading-text" id="landscape-text"></div>
-</div>
+    <!-- Landscape Reading -->
+    <div class="soul-reading landscape-reading" id="landscape-section" style="display:none">
+      <div class="landscape-label" id="landscape-label">立ち上がる景色</div>
+      <div class="reading-title" id="landscape-title"></div>
+      <div class="reading-text" id="landscape-text"></div>
+    </div>
 
-<!-- Info Chips (一番下) -->
-<div class="info-chips" id="info-chips"></div>
-<div class="soul-message" id="soul-message" style="display:none">
-  <div class="soul-message-label">Soul Landscape Philosophy</div>
-  <p id="soul-message-text"></p>
-</div>
-<div class="endroll">Every soul is a landscape of Earth</div>
-```
-
+    <!-- Info Chips (一番下) -->
+    <div class="info-chips" id="info-chips"></div>
+    <div class="soul-message" id="soul-message" style="display:none">
+      <div class="soul-message-label">Soul Landscape Philosophy</div>
+      <p id="soul-message-text"></p>
+    </div>
+    <div class="endroll">Every soul is a landscape of Earth</div>
   </div>
 
   <!-- Footer -->
-
   <div class="footer">
     <div class="footer-logo">Modo Room_</div>
-    <div class="footer-tag">— A Book of Life Landscapes —</div>
+    <div class="footer-tag">-- A Book of Life Landscapes --</div>
   </div>
 
 </div>
 
-<script>
-// ========================================
-// 四柱推命計算ロジック
-// ========================================
 
-const JIKKAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-const JUNISHI = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const JIKKAN_EN = ['Wood+','Wood-','Fire+','Fire-','Earth+','Earth-','Metal+','Metal-','Water+','Water-'];
-const JUNISHI_EN = ['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Monkey','Rooster','Dog','Pig'];
-const JIKKAN_ELEMENT = ['木','木','火','火','土','土','金','金','水','水'];
-const JUNISHI_ELEMENT = ['水','土','木','木','土','火','火','土','金','金','土','水'];
 
-// 蔵干
-const ZOKAN = {
-  '子': ['壬'], '丑': ['己','癸','辛'], '寅': ['甲','丙','戊'],
-  '卯': ['乙'], '辰': ['戊','乙','癸'], '巳': ['丙','庚','戊'],
-  '午': ['丁','己'], '未': ['己','乙','丁'], '申': ['庚','壬','戊'],
-  '酉': ['辛'], '戌': ['戊','辛','丁'], '亥': ['壬','甲']
-};
 
-// 五行色
-const ELEMENT_COLORS = {
-  '木': { r: 90, g: 140, b: 80, hex: '#5a8c50' },
-  '火': { r: 196, g: 100, b: 80, hex: '#c46450' },
-  '土': { r: 160, g: 130, b: 90, hex: '#a0825a' },
-  '金': { r: 140, g: 160, b: 180, hex: '#8ca0b4' },
-  '水': { r: 70, g: 120, b: 160, hex: '#4678a0' }
-};
-
-let selectedGender = 'female';
-
-function selectGender(gender, btn) {
-  selectedGender = gender;
-  document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-// 年柱計算
-function getYearPillar(year) {
-  const kanIdx = (year - 4) % 10;
-  const shiIdx = (year - 4) % 12;
-  return {
-    kan: JIKKAN[((kanIdx % 10) + 10) % 10],
-    shi: JUNISHI[((shiIdx % 12) + 12) % 12]
-  };
-}
-
-// 月柱計算（節入り簡易版）
-const SETSUIRI = {
+<script>const SETSUIRI = {
   '19200405':[4,11,13],
   '19200506':[5,5,7],
   '19200606':[6,9,43],
@@ -2261,7 +2180,56 @@ const SETSUIRI = {
   '20310105':[1,22,22],
   '20310204':[2,9,59],
   '20310306':[3,3,52],
+};</script>
+<script>
+// ========================================
+// 四柱推命計算ロジック
+// ========================================
+
+const JIKKAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const JUNISHI = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const JIKKAN_EN = ['Wood+','Wood-','Fire+','Fire-','Earth+','Earth-','Metal+','Metal-','Water+','Water-'];
+const JUNISHI_EN = ['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Monkey','Rooster','Dog','Pig'];
+const JIKKAN_ELEMENT = ['木','木','火','火','土','土','金','金','水','水'];
+const JUNISHI_ELEMENT = ['水','土','木','木','土','火','火','土','金','金','土','水'];
+
+// 蔵干
+const ZOKAN = {
+  '子': ['壬'], '丑': ['己','癸','辛'], '寅': ['甲','丙','戊'],
+  '卯': ['乙'], '辰': ['戊','乙','癸'], '巳': ['丙','庚','戊'],
+  '午': ['丁','己'], '未': ['己','乙','丁'], '申': ['庚','壬','戊'],
+  '酉': ['辛'], '戌': ['戊','辛','丁'], '亥': ['壬','甲']
 };
+
+// 五行色
+const ELEMENT_COLORS = {
+  '木': { r: 90, g: 140, b: 80, hex: '#5a8c50' },
+  '火': { r: 196, g: 100, b: 80, hex: '#c46450' },
+  '土': { r: 160, g: 130, b: 90, hex: '#a0825a' },
+  '金': { r: 140, g: 160, b: 180, hex: '#8ca0b4' },
+  '水': { r: 70, g: 120, b: 160, hex: '#4678a0' }
+};
+
+let selectedGender = 'female';
+
+function selectGender(gender, btn) {
+  selectedGender = gender;
+  document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// 年柱計算
+function getYearPillar(year) {
+  const kanIdx = (year - 4) % 10;
+  const shiIdx = (year - 4) % 12;
+  return {
+    kan: JIKKAN[((kanIdx % 10) + 10) % 10],
+    shi: JUNISHI[((shiIdx % 12) + 12) % 12]
+  };
+}
+
+// 月柱計算（節入り簡易版）
+
 
 
 // 月支取得（節入り時刻対応版）
@@ -2281,22 +2249,22 @@ function getMonthShi(year, month, day, hasTime, hour, minute) {
       if (i === 0) {
         // 節入り当日
         if (hasTime) {
-          // 時刻あり：節入り時刻と比較して正確に判定
+          // 時刻あり:節入り時刻と比較して正確に判定
           var birthMinutes = hour * 60 + minute;
           var setsuMinutes = entry[1] * 60 + entry[2];
           if (birthMinutes >= setsuMinutes) {
-            // 節入り時刻以降 → 新しい月支
+            // 節入り時刻以降 -> 新しい月支
             return entry[0];
           } else {
-            // 節入り時刻前 → 前の月支（次のループで見つかる）
+            // 節入り時刻前 -> 前の月支（次のループで見つかる）
             continue;
           }
         } else {
-          // 時刻不明 → 境界を示す -1 を返す
+          // 時刻不明 -> 境界を示す -1 を返す
           return -1;
         }
       } else {
-        // 節入り日より後の日 → この月支を適用
+        // 節入り日より後の日 -> この月支を適用
         return entry[0];
       }
     }
@@ -2311,7 +2279,7 @@ function getMonthPillar(year, month, day, hasTime, hour, minute) {
   var groupIdx = yearKanIdx % 5;
   var shiIdx = getMonthShi(year, month, day, hasTime, hour || 0, minute || 0);
   if (shiIdx === -1) {
-    // 節入り境界・時刻不明 → 不確定
+    // 節入り境界・時刻不明 -> 不確定
     return { kan: '?', shi: '?' };
   }
   var monthOffset = ((shiIdx - 2) + 12) % 12;
@@ -2341,10 +2309,10 @@ function getDayPillar(year, month, day) {
 
 // 時柱計算
 function getHourPillar(hour, dayKanIdx) {
-  // 時支：23-1=子,1-3=丑,...
+  // 時支:23-1=子,1-3=丑,...
   const hourBranches = [0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11];
   const shiIdx = hourBranches[hour];
-  // 時干：日干から計算
+  // 時干:日干から計算
   const groupIdx = Math.floor(dayKanIdx / 2);
   const baseKans = [0, 2, 4, 6, 8]; // 甲丙戊庚壬
   const kanIdx = (baseKans[groupIdx] + shiIdx) % 10;
@@ -2557,7 +2525,8 @@ function generateReading(dayKan, counts, missing, monthShi) {
 }
 
 // オーブ描画
-function drawOrb(canvas, counts) {
+</script>
+<script>function drawOrb(canvas, counts) {
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const cx = W/2, cy = H/2, R = W/2;
@@ -2629,7 +2598,7 @@ function calculate() {
   const minuteRaw = parseInt(document.getElementById('minute').value) || 0;
   const prefOffset = parseInt(document.getElementById('prefecture').value) || 0;
 
-  // 地方時補正：入力された時刻に補正分を加算
+  // 地方時補正:入力された時刻に補正分を加算
   let totalMinutes = (isNaN(hourRaw) ? 12 * 60 : hourRaw * 60) + minuteRaw + prefOffset;
   if (totalMinutes < 0) totalMinutes += 24 * 60;
   if (totalMinutes >= 24 * 60) totalMinutes -= 24 * 60;
@@ -2692,7 +2661,7 @@ function calculate() {
       const cell = document.createElement('div');
       cell.className = 'pillar-cell';
       if (p.kan === '?') {
-        cell.innerHTML = `<span class="pillar-kan" style="opacity:0.35">?</span><span class="pillar-element" style="opacity:0.35">—</span>`;
+        cell.innerHTML = `<span class="pillar-kan" style="opacity:0.35">?</span><span class="pillar-element" style="opacity:0.35">--</span>`;
       } else {
         const kanEl = JIKKAN_ELEMENT[JIKKAN.indexOf(p.kan)];
         cell.innerHTML = `<span class="pillar-kan" style="color:${ELEMENT_COLORS[kanEl]?.hex || '#e8e4de'}">${p.kan}</span><span class="pillar-element">${kanEl}</span>`;
@@ -2703,7 +2672,7 @@ function calculate() {
     if (!hasTimeInput) {
       const cell = document.createElement('div');
       cell.className = 'pillar-cell';
-      cell.innerHTML = `<span class="pillar-kan" style="opacity:0.25">—</span>`;
+      cell.innerHTML = `<span class="pillar-kan" style="opacity:0.25">--</span>`;
       grid.appendChild(cell);
     }
 
@@ -2711,7 +2680,7 @@ function calculate() {
       const cell = document.createElement('div');
       cell.className = 'pillar-cell';
       if (p.shi === '?') {
-        cell.innerHTML = `<span class="pillar-chi" style="opacity:0.35">?</span><span class="pillar-element" style="opacity:0.35">—</span>`;
+        cell.innerHTML = `<span class="pillar-chi" style="opacity:0.35">?</span><span class="pillar-element" style="opacity:0.35">--</span>`;
       } else {
         const shiEl = JUNISHI_ELEMENT[JUNISHI.indexOf(p.shi)];
         cell.innerHTML = `<span class="pillar-chi" style="color:${ELEMENT_COLORS[shiEl]?.hex || '#c9c3bb'}">${p.shi}</span><span class="pillar-element">${shiEl}</span>`;
@@ -2722,7 +2691,7 @@ function calculate() {
     if (!hasTimeInput) {
       const cell = document.createElement('div');
       cell.className = 'pillar-cell';
-      cell.innerHTML = `<span class="pillar-chi" style="opacity:0.25">—</span>`;
+      cell.innerHTML = `<span class="pillar-chi" style="opacity:0.25">--</span>`;
       grid.appendChild(cell);
     }
 
@@ -2796,7 +2765,7 @@ function calculate() {
     const correctionNote = (prefOffset !== 0 && hasTime) ? ` (${prefName} / 補正${prefOffset > 0 ? '+' : ''}${prefOffset}分)` : (prefName !== '選択してください' ? ` (${prefName})` : '');
     document.getElementById('result-date').textContent = `${year}.${String(month).padStart(2,'0')}.${String(day).padStart(2,'0')}${hasTime ? ' ' + String(hour).padStart(2,'0') + ':' + String(minute).padStart(2,'0') : ''}${correctionNote}`;
     const dayKanEl = JIKKAN_ELEMENT[JIKKAN.indexOf(dayP.kan)];
-    document.getElementById('result-name').textContent = `${dayP.kan}（${dayKanEl}） — ${JIKKAN_EN[JIKKAN.indexOf(dayP.kan)]}`;
+    document.getElementById('result-name').textContent = `${dayP.kan}（${dayKanEl})-${JIKKAN_EN[JIKKAN.indexOf(dayP.kan)]}`;
 
     // Orb
     const canvas = document.getElementById('orb-canvas');
@@ -2810,6 +2779,7 @@ function calculate() {
     const resultEl = document.getElementById('result');
     resultEl.style.display = 'block';
     requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
       resultEl.classList.add('visible');
       // Animate bars
       setTimeout(() => {
@@ -2817,6 +2787,7 @@ function calculate() {
           bar.style.width = bar.dataset.pct + '%';
         });
       }, 300);
+      });
     });
 
     // Scroll
@@ -2833,9 +2804,10 @@ document.addEventListener('keydown', e => {
 // ========================================
 // 言語切り替え / Language Toggle
 // ========================================
-const EN_TRANSLATIONS = {
+</script>
+<script>const EN_TRANSLATIONS = {
   soulTitles: {
-    '甲': 'A soul that rises straight toward the sky like a great tree. Never bending, never breaking — only upward. Its quiet strength becomes a forest that gently supports all around it.',
+    '甲': 'A soul that rises straight toward the sky like a great tree. Never bending, never breaking - only upward. Its quiet strength becomes a forest that gently supports all around it.',
     '乙': 'A flexible soul that takes root wherever it grows, swaying in the wind. It knows that true strength lies not in rigidity, but in resilience.',
     '丙': 'A soul like the sun, pouring light without reservation. Its very presence brightens the room. Even casting shadows is part of its work.',
     '丁': 'A soul whose light shines brightest in the dark of night. Small, yet undeniably warm. A flame that flickers but never goes out.',
@@ -2844,7 +2816,7 @@ const EN_TRANSLATIONS = {
     '庚': 'A soul like a blade forged from stone and metal. Strong, clear, and unwavering. Its strength is shaped through pressure, becoming sharper with time.',
     '辛': 'A soul that shines quietly and beautifully, like a polished jewel. Its worth reveals itself naturally in clear light, without need for proclamation.',
     '壬': 'A soul that spreads like an endless sea. Beneath its calm surface, a deep current flows ceaselessly.',
-    '癸': 'A soul like water itself — formless, gently spreading. Though hard to see, it quietly nourishes the world.',
+    '癸': 'A soul like water itself - formless, gently spreading. Though hard to see, it quietly nourishes the world.',
   },
   enLandscapes: {
     '甲子': { title: 'A Silent Winter Forest', text: 'In the deep stillness of winter, a forest rests beneath the cold sky.\nAmong the bare trees, one tall tree rises straight upward.\nThough its leaves have fallen, a quiet vitality sleeps within its trunk,\nholding life patiently through the frozen season.' },
@@ -2969,43 +2941,17 @@ const EN_TRANSLATIONS = {
     '癸亥': { title: 'Winter Fog Over Water', text: 'A pale winter fog spreads across the surface of the water.\nThe landscape fades softly into the mist,\nholding a deep and quiet stillness.' },
   },
   missingStories: {
-    '木': 'Your landscape holds no rocky ground — only soft earth stretching wide.',
+    '木': 'Your landscape holds no rocky ground - only soft earth stretching wide.',
     '火': 'Your landscape is a world just before dawn. A longing for light moves the scene.',
-    '土': 'Your landscape is a river and open sky — endless freedom with no fixed place.',
+    '土': 'Your landscape is a river and open sky - endless freedom with no fixed place.',
     '金': 'Your landscape has no boundaries or edges. Feeling deeply, rather than forming, is your nature.',
     '水': 'Your landscape lives in dry light. A thirst for moisture becomes the source of your creation.',
   },
 };
 
 
-const SOUL_MESSAGE_JA = `この風景は、魂の最初のレイヤー。
-
-命式から最初に立ち上がる景色、
-Birth Soul。
-
-その奥には
-五行の配分や気の流れ
-まだ見えていない風景がある。
-
-それが
-Growth Soul —
-
-あなただけの魂の景色。`;
-const SOUL_MESSAGE_EN = `This landscape is the first layer of your soul.
-
-The scenery that first rises from your destiny chart,
-Birth Soul.
-
-Beyond it,
-in the balance of the Five Elements
-and the flow of Qi,
-there is a landscape not yet seen.
-
-That is
-Growth Soul —
-
-the landscape of your soul,
-yours alone.`;
+const SOUL_MESSAGE_JA = 'この風景は、魂の最初のレイヤー。\n\n命式から最初に立ち上がる景色、\nBirth Soul。\n\nその奥には\n五行の配分や気の流れ\nまだ見えていない風景がある。\n\nそれが\nGrowth Soul --\n\nあなただけの魂の景色。';
+const SOUL_MESSAGE_EN = 'This landscape is the first layer of your soul.\n\nThe scenery that first rises from your destiny chart,\nBirth Soul.\n\nBeyond it,\nin the balance of the Five Elements\nand the flow of Qi,\nthere is a landscape not yet seen.\n\nThat is\nGrowth Soul --\n\nthe landscape of your soul,\nyours alone.';
 
 function showSoulMessage(lang) {
   const el = document.getElementById('soul-message');
@@ -3049,6 +2995,19 @@ function setLang(lang) {
 }
 
 </script>
-
+<script>
+window.addEventListener('error', function(e) {
+  var box = document.createElement('pre');
+  box.style.cssText = 'position:fixed;left:10px;right:10px;top:10px;z-index:99999;background:rgba(0,0,0,0.9);color:#ff8080;padding:12px;font-size:12px;white-space:pre-wrap;border:1px solid #ff8080';
+  box.textContent = 'JS ERROR\nmessage: ' + e.message + '\nline: ' + e.lineno + '\ncol: ' + e.colno;
+  document.body.appendChild(box);
+});
+window.addEventListener('DOMContentLoaded', function() {
+  var boot = document.createElement('div');
+  boot.style.cssText = 'position:fixed;bottom:10px;right:10px;z-index:99999;background:rgba(0,128,0,0.9);color:#fff;padding:8px 10px;font-size:12px';
+  boot.textContent = 'JS BOOT OK';
+  document.body.appendChild(boot);
+});
+</script>
 </body>
 </html>
